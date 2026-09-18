@@ -71,6 +71,13 @@
             <span id="nav-review-badge" class="px-1.5 py-0.5 rounded-full bg-red-600 text-white text-[10px] font-bold min-w-[18px] text-center">0</span>
           </button>
 
+          <!-- أزرار تكبير وتصغير كامل نصوص الصفحة (أعلى الصفحة بجانب الوضع الليلي) -->
+          <div class="flex items-center gap-0.5 sm:gap-1 bg-slate-100 dark:bg-slate-800/90 p-0.5 sm:p-1 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-sm">
+            <button onclick="adjustGlobalFontSize(-1)" title="تصغير خط كامل الصفحة" class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center font-black text-xs hover:bg-white dark:hover:bg-slate-700 rounded-lg text-slate-700 dark:text-slate-200 transition-all active:scale-90">A-</button>
+            <button onclick="resetGlobalFontSize()" title="إعادة الحجم الافتراضي 100%" id="global-font-indicator" class="text-[10px] sm:text-xs font-bold px-1 text-emerald-700 dark:text-emerald-400 min-w-[34px] sm:min-w-[40px] text-center hover:opacity-75 transition-opacity cursor-pointer">100%</button>
+            <button onclick="adjustGlobalFontSize(1)" title="تكبير خط كامل الصفحة" class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center font-black text-xs hover:bg-white dark:hover:bg-slate-700 rounded-lg text-slate-700 dark:text-slate-200 transition-all active:scale-90">A+</button>
+          </div>
+
           <button onclick="toggleTheme()" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
             <svg id="theme-icon-light" class="w-4 h-4 sm:w-5 sm:h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
@@ -208,12 +215,8 @@
           <p class="text-sm text-slate-500">انقر على الزر (+) لإظهار الرد التفصيلي</p>
         </div>
         <div class="flex items-center gap-2">
-          <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
-            <button onclick="adjustAnswerFontSize(-1)" class="w-8 h-8 font-bold text-xs hover:bg-white dark:hover:bg-slate-700 rounded-lg">A-</button>
-            <button onclick="adjustAnswerFontSize(1)" class="w-8 h-8 font-bold text-xs hover:bg-white dark:hover:bg-slate-700 rounded-lg">A+</button>
-          </div>
-          <button onclick="expandAllShubuhat(true)" class="px-3 py-1.5 text-xs font-semibold bg-slate-200 dark:bg-slate-800 rounded-lg">توسيع الكل</button>
-          <button onclick="expandAllShubuhat(false)" class="px-3 py-1.5 text-xs font-semibold bg-slate-200 dark:bg-slate-800 rounded-lg">طي الكل</button>
+          <button onclick="expandAllShubuhat(true)" class="px-3 py-1.5 text-xs font-semibold bg-slate-200 dark:bg-slate-800 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-700 transition">توسيع الكل</button>
+          <button onclick="expandAllShubuhat(false)" class="px-3 py-1.5 text-xs font-semibold bg-slate-200 dark:bg-slate-800 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-700 transition">طي الكل</button>
         </div>
       </div>
       
@@ -397,22 +400,153 @@
     ];
 
     const objectiveQuestionsData = [
-      { id:1, shubhaRefId:0, topic:'التوحيد والربوبية', question:'لماذا قاتل النبي ﷺ قريشاً مع إقرارهم بالربوبية؟', options:[ {key:'A', text:'لأنهم أنكروا الخالق'}, {key:'B', text:'لأنهم اتخذوا وسائط للشفاعة'}, {key:'C', text:'لأنهم أنكروا البعث فقط'}, {key:'D', text:'لتركهم الصلاة'} ], correctKey:'B', explanation:'إقرارهم بالربوبية لم يُدخلهم الإسلام لتركهم توحيد العبادة واتخاذهم شفعاء.'},
-      { id:2, shubhaRefId:2, topic:'شبهة الأصنام والصالحين', question:'كيف نرد على من ادعى أن آيات الشرك خاصة بالأصنام لا الصالحين؟', options:[ {key:'A', text:'أن الأصنام تحيا يوم القيامة'}, {key:'B', text:'أن لفظ صنم يطلق على النبي لغة'}, {key:'C', text:'أن القرآن صرح بدعائهم لعيسى والملائكة وكفرهم النبي دون تفريق'}, {key:'D', text:'أن الشرك خاص بالأحجار'} ], correctKey:'C', explanation:'القرآن أثبت أن من المشركين من عبد الأنبياء والملائكة وحكم عليهم بالشرك.'},
-      { id:3, shubhaRefId:6, topic:'شفاعة النبي', question:'ما الرد على من قال: النبي أُعطي الشفاعة وأنا أطلبها منه؟', options:[ {key:'A', text:'الشفاعة في الآخرة فقط'}, {key:'B', text:'الله أعطاه ونهاك عن دعاء غيره، والشفاعة أعطيت للملائكة والأفراط فلو جاز دعاؤه لجاز دعاؤهم'}, {key:'C', text:'الشفاعة خاصة بالأنبياء'}, {key:'D', text:'لا يجوز الصلاة عليه إلا بالفرض'} ], correctKey:'B', explanation:'لو جاز دعاء النبي لأن الله أعطاه الشفاعة لجاز دعاء الملائكة والأفراط لأنهم أعطوها أيضاً، وهو الشرك.'},
-      { id:4, shubhaRefId:0, topic:'الجواب المجمل', question:'ما هو الجواب المجمل لرد المتشابه؟', options:[ {key:'A', text:'رد المشتبه للمحكم وهو أن النبي قاتلهم مع إقرارهم بالربوبية لاتخاذهم وسائط'}, {key:'B', text:'السكوت'}, {key:'C', text:'الطعن بالسند'}, {key:'D', text:'استخدام علم الكلام'} ], correctKey:'A', explanation:'اليقين بأن كلام الله ورسوله لا يتناقض، ورد المتشابه الخفي للمحكم الصريح.'},
-      { id:5, shubhaRefId:9, topic:'مانعو الزكاة والشهادتين', question:'بماذا يُرد على من زعم أن من نطق الشهادتين وصلى لا يكفر؟', options:[ {key:'A', text:'الشهادتان تمنع التكفير مطلقاً'}, {key:'B', text:'إجماع الصحابة على قتال بني حنيفة وحكم بردتهم مع صلاتهم لما أقروا مسيلمة'}, {key:'C', text:'بنو حنيفة لم يصلوا'}, {key:'D', text:'لم يقاتلوهم قتال ردة'} ], correctKey:'B', explanation:'من أتى بناقض كفري بطلت سائر أعماله وشعائره كفعل الصحابة مع بني حنيفة.'},
-      { id:6, shubhaRefId:10, topic:'ذات أنواط', question:'قصة ذات أنواط حجة على الخصم لأن:', options:[ {key:'A', text:'الصحابة فعلوا وعفي عنهم'}, {key:'B', text:'الصحابة لم يفعلوا، ولو فعلوا لكفروا، ولما نُبهوا تابوا فوراً'}, {key:'C', text:'التبرك بالشجر جائز'}, {key:'D', text:'القصة ضعيفة'} ], correctKey:'B', explanation:'تدل على خفاء بعض المسائل ووجوب التوبة فور العلم.'},
-      { id:7, shubhaRefId:11, topic:'حديث أسامة', question:'كيف يوجه حديث أسامة ﴿فتبينوا﴾؟', options:[ {key:'A', text:'منسوخ'}, {key:'B', text:'الكلمة تعصم الدم حتى يتبين ناقض، ولو منعت مطلقاً لما قُوتل الخوارج والغلاة'}, {key:'C', text:'خاص بالكفار'}, {key:'D', text:'يعصم الدم مطلقاً'} ], correctKey:'B', explanation:'الكلمة تعصم مبدئياً فإذا أظهر ناقضاً قوتل بحسبه كفعل السلف.'},
-      { id:8, shubhaRefId:12, topic:'الاستغاثة', question:'ما ضابط الاستغاثة الجائزة شرعاً؟', options:[ {key:'A', text:'بالمخلوق الحي الحاضر فيما يقدر عليه'}, {key:'B', text:'لا تجوز مطلقاً'}, {key:'C', text:'بالصالحين فقط'}, {key:'D', text:'في الشدة فقط'} ], correctKey:'A', explanation:'الاستغاثة العادية بالحي القادر كإنقاذ غريق جائزة، والشركية هي الغيابية أو فيما لا يقدر عليه إلا الله.'},
-      { id:9, shubhaRefId:0, topic:'شرك الأولين', question:'كيف كان شرك الأولين أخف؟', options:[ {key:'A', text:'يشركون في الصيام'}, {key:'B', text:'يخلصون في الشدة ويدعون مقربين، بخلاف المتأخرين شركهم دائم ويدعون المجاهيل ومن عرف بإسقاط التكاليف'}, {key:'C', text:'يحفظون التوراة'}, {key:'D', text:'لا يعبدون أصناماً'} ], correctKey:'B', explanation:'الأولون يخلصون بالبحر ويدعون ملائكة وأنبياء، بخلاف بعض المتأخرين.'},
-      { id:10, shubhaRefId:0, topic:'المازح والمكره', question:'دلالة آية ﴿لا تعتذروا﴾ مع ﴿إلا من أكره﴾:', options:[ {key:'A', text:'المازح معذور'}, {key:'B', text:'الكفر بالقلب فقط'}, {key:'C', text:'المازح يكفر باللفظ، ولا يعذر بنطق الكفر إلا المكره بالسيف وقلبه مطمئن'}, {key:'D', text:'الآيات منسوخة'} ], correctKey:'C', explanation:'الآيات قاطعة في أن كلمة الكفر توجب الردة ولا يعذر إلا المكره بقوة ملجئة.'}
+      {
+        id: 1,
+        shubhaRefId: 0,
+        topic: 'التوحيد والربوبية',
+        question: 'ما العلة الشرعية التي استحل بها النبي ﷺ دماء مشركي العرب رغم إقرارهم بأن الله هو الخالق الرازق؟',
+        options: [
+          { key: 'A', text: 'إنكارهم قدرة الله التامة على إحياء الموتى والبعث بعد الفناء.' },
+          { key: 'B', text: 'اعتقادهم استقلال الأصنام بإيجاد المنافع وجلب الأرزاق في الأرض.' },
+          { key: 'C', text: 'صرفهم العبادة لوسائط تقربهم إلى الله وتشفع لهم عنده.' },
+          { key: 'D', text: 'امتناعهم عن الخضوع لأحكام الشريعة في المعاملات والدماء.' }
+        ],
+        correctKey: 'C',
+        explanation: 'إقرار المشركين بالربوبية لم يدخلهم في الإسلام لأنهم اتخذوا وسائط وشفعاء صرفوا لهم الدعاء والعبادة ليقربوهم إلى الله زلفى.'
+      },
+      {
+        id: 2,
+        shubhaRefId: 2,
+        topic: 'شبهة الأصنام والصالحين',
+        question: 'كيف نرد على من زعم أن آيات الشرك خُصت بمن قصد الأحجار والأشجار دون من توسل بجاه الصالحين؟',
+        options: [
+          { key: 'A', text: 'بأن لفظ الصنم في لسان العرب يختص شرعاً بكل صاحب فضيلة يُرجى جاهه.' },
+          { key: 'B', text: 'بأن دعاء الصالحين إنما حُرِّم سداً للذريعة خوفاً من عبادتهم كالأصنام لاحقاً.' },
+          { key: 'C', text: 'بأن الأولين لم ينصبوا أحجاراً أصلاً، بل كانت تماثيلهم كلها قبوراً لأولياء.' },
+          { key: 'D', text: 'بأن القرآن أثبت أن شركهم شمل دعاء الملائكة وعيسى والصالحين وسوّى بينهم.' }
+        ],
+        correctKey: 'D',
+        explanation: 'القرآن صرح بأن من المشركين من كان يدعو الأنبياء والصالحين والملائكة، فكفّرهم الله جميعاً ولم يفرق النبي ﷺ بين من عبد حجراً أو نبياً.'
+      },
+      {
+        id: 3,
+        shubhaRefId: 6,
+        topic: 'شفاعة النبي ﷺ',
+        question: 'بمَ يُجاب من قال: «النبي ﷺ أُعطي مقام الشفاعة، وأنا أسأله مما خصّه الله به وأعطاه»؟',
+        options: [
+          { key: 'A', text: 'بأن الشفاعة أُعطيت أيضاً للملائكة والأفراط فطلبها منهم عبادة محرمة بالإجماع.' },
+          { key: 'B', text: 'بأن النبي ﷺ لا يملك شفاعة أحد في الدنيا لأنها تأجلت بالكلية إلى الدار الآخرة.' },
+          { key: 'C', text: 'بأن الله حصر الشفاعة في الأنبياء وحدهم دون سائر الخلق فلا تُطلب إلا بالصلاة.' },
+          { key: 'D', text: 'بأن طلب الشفاعة جائز لمن زار قبره الشريف دون من كان نائياً عنه في البلدان.' }
+        ],
+        correctKey: 'A',
+        explanation: 'الله تعالى أعطاه الشفاعة ونهاك عن دعاء غيره، والشفاعة أُعطيت لغيره كالملائكة والأفراط؛ فلو جاز دعاء النبي لأجل إعطائها لجاز دعاء غيره وهو باطل بإجماع.'
+      },
+      {
+        id: 4,
+        shubhaRefId: 0,
+        topic: 'الجواب المجمل',
+        question: 'ما هو المسلك المعتمد في «الجواب المجمل» عند مواجهة صاحب الشبهة كما قرره المصنف؟',
+        options: [
+          { key: 'A', text: 'تتبع ألفاظ الشبهة بالتقسيم المنطقي واستخراج التناقض الداخلي في عبارات الخصم.' },
+          { key: 'B', text: 'رد المتشابه إلى المحكم الثابت بيقين أن كلام الله ورسوله لا يتناقض ولا يختلف.' },
+          { key: 'C', text: 'السكوت المطلق والإعراض عن مجادلة الخصم لأن مناظرته تورث قسوة القلب وزيغه.' },
+          { key: 'D', text: 'الطعن في أسانيد الروايات التي يستدل بها الخصم وإثبات ضعف دلالتها اللغوية.' }
+        ],
+        correctKey: 'B',
+        explanation: 'الجواب المجمل يقوم على رد المتشابه الخفي إلى المحكم الجلي، والقطع بأن كلام الله ورسوله ﷺ حق مؤتلف لا يتناقض.'
+      },
+      {
+        id: 5,
+        shubhaRefId: 9,
+        topic: 'مانعو الزكاة والشهادتان',
+        question: 'ما الدليل التاريخي القطعي على أن النطق بالشهادتين وإقامة الصلاة لا يمنعان من الحكم بالردة عند وجود الناقض؟',
+        options: [
+          { key: 'A', text: 'كون الشهادتين إنما تعصمان دم ومال من أتى بجميع فرائض الإسلام الظاهرة فقط.' },
+          { key: 'B', text: 'قتال أبي بكر لمانعي الزكاة لمجرد شحهم بالمال لا لاعتقاد ناقض خرجوا به من الملة.' },
+          { key: 'C', text: 'قتال الصحابة لبني حنيفة وحكمهم بردتهم وسبي نسائهم مع كونهم يؤذنون ويصلون.' },
+          { key: 'D', text: 'أن تارك التوحيد لا تقبل منه شهادة أصلاً في الدنيا وتُعتبر صلاته باطلة لغةً.' }
+        ],
+        correctKey: 'C',
+        explanation: 'الصحابة رضي الله عنهم أجمعوا على قتال بني حنيفة وحكموا بردتهم وسبي نسائهم مع كونهم يشهدون ويؤذنون ويصلون، لما صدقوا مسيلمة الكذاب.'
+      },
+      {
+        id: 6,
+        shubhaRefId: 10,
+        topic: 'ذات أنواط',
+        question: 'ما وجه كون قصة طلب الصحابة لـ «ذات أنواط» حجةً تدحض دعوى المخالف لا حجةً له؟',
+        options: [
+          { key: 'A', text: 'أن التبرك بالشجر مباح في أصله وإنما نهاهم النبي ﷺ كراهةً للتشبه بالأعاجم.' },
+          { key: 'B', text: 'أن طلب الصحابة كان تبركاً جائزاً ولكن النبي ﷺ شدد عليهم لكونهم حديثي عهد بكفر.' },
+          { key: 'C', text: 'أن القصة تدل على أن الجاهل يُعذر في الفعل نفسه ولو استمر عليه بعد البيان.' },
+          { key: 'D', text: 'أن الصحابة لما نُبّهوا تابوا فوراً ولم يفعلوا، ولو فعلوا الشرك لحُكم بكفرهم.' }
+        ],
+        correctKey: 'D',
+        explanation: 'الصحابة رضي الله عنهم لم يتخذوا الشجرة ولم يفعلوا ذلك، ولو فعلوه لكفروا، ولما نهاهم النبي ﷺ استغفروا وتابوا في الحال.'
+      },
+      {
+        id: 7,
+        shubhaRefId: 11,
+        topic: 'حديث أسامة رضي الله عنه',
+        question: 'كيف يُوجّه استدلال المخالف بإنكار النبي ﷺ قتل من قال «لا إله إلا الله» في قصة أسامة؟',
+        options: [
+          { key: 'A', text: 'الكلمة تعصم ما لم يظهر ناقض، وإلا لما قُوتل الخوارج وبنو حنيفة ومانعو الزكاة.' },
+          { key: 'B', text: 'الحديث منسوخ بآيات السيف التي نزلت في أواخر العهد المدني لقتال المشركين.' },
+          { key: 'C', text: 'النهي خاص بمن نطق بالشهادتين في حال السلم دون من قالها تحت ظلال السيوف.' },
+          { key: 'D', text: 'الواجب قبول ظاهر القائل مطلقاً ولا يجوز قتاله ولو أتى بما يناقض الشهادتين صراحة.' }
+        ],
+        correctKey: 'A',
+        explanation: 'كلمة لا إله إلا الله تعصم الدم والمال ما لم يأتِ قائلها بناقض؛ ولولا ذلك لم يقاتل الصحابة بنو حنيفة ومانعو الزكاة والخوارج مع نطقهم بها.'
+      },
+      {
+        id: 8,
+        shubhaRefId: 12,
+        topic: 'ضابط الاستغاثة',
+        question: 'ما هو الضابط الدقيق الذي يفصل بين الاستغاثة الجائزة شرعاً والاستغاثة الشركية؟',
+        options: [
+          { key: 'A', text: 'أن تكون بمخلوق معظّم في الدين سواء أكان حياً حاضراً أم ميتاً في ضريحه.' },
+          { key: 'B', text: 'أن تكون بالمخلوق الحي الحاضر فيما يدخل تحت قدرته وأسبابه العادية المعتادة.' },
+          { key: 'C', text: 'أن يقصد المستغيث التماس البركة دون اعتقاد التأثير الذاتي للمخلوق المعان.' },
+          { key: 'D', text: 'أن تقتصر على أوقات الكروب والشدائد الشديدة التي يعجز العبد عن دفعها بمفرده.' }
+        ],
+        correctKey: 'B',
+        explanation: 'الاستغاثة الجائزة مقيدة بكونها بحي حاضر قادر في حدود الأسباب الطبيعية المعتادة؛ أما الاستغاثة بالميت أو الغائب أو الحي فيما لا يقدر عليه إلا الله فهي شرك أكبر.'
+      },
+      {
+        id: 9,
+        shubhaRefId: 0,
+        topic: 'شرك الأولين والمتأخرين',
+        question: 'ما الوجهان اللذان جعلا شرك أهل الجاهلية الأولى أخف من شرك طوائف المتأخرين؟',
+        options: [
+          { key: 'A', text: 'إقرار الأولين بتوحيد العبادة وإنكارهم الربوبية، بينما عكس المتأخرون هذا الإقرار تماماً.' },
+          { key: 'B', text: 'أن الأولين لم يقصدوا التبرك الحقيقي، بينما جعل المتأخرون الأولياء أرباباً مع الله.' },
+          { key: 'C', text: 'إخلاص الأولين في الشدة وقصدهم الصالحين، بخلاف استمرار شرك المتأخرين ودعائهم الفساق.' },
+          { key: 'D', text: 'اقتصار الأولين في شركهم على الذبح فقط، بينما زاد المتأخرون عليه بالنذر والركوع.' }
+        ],
+        correctKey: 'C',
+        explanation: 'الأولون كانوا يخلصون لله في الشدة ويدعون مقربين كالملائكة والأنبياء، بخلاف بعض المتأخرين الذين يستمر شركهم في الرخاء والشدة ويدعون أناساً فيهم الفساق والمجاهيل.'
+      },
+      {
+        id: 10,
+        shubhaRefId: 0,
+        topic: 'الخاتمة والآيتان',
+        question: 'ما المعنى الدقيق المستفاد من الجمع بين قوله تعالى: ﴿لا تعتذروا﴾ وقوله: ﴿إلا من أُكره﴾؟',
+        options: [
+          { key: 'A', text: 'اشتراط انشراح الصدر بالكفر للمؤاخذة باللفظ، فمن لم ينشرح قلبه عُفي عن لسانه.' },
+          { key: 'B', text: 'التفريق بين من كفر طمعاً في جاه أو دنيا وبين من تكلم بالاستهزاء كاذباً أو لاعباً.' },
+          { key: 'C', text: 'اختصاص نفي العذر بالمنافقين في زمن التنزيل، وجريان العذر بالجهل على من بعدهم.' },
+          { key: 'D', text: 'كفر من تكلم بكلمة الردة ولو مازحاً، وأنه لا يُعذر بنطقها إلا الملجأ بالإكراه التام.' }
+        ],
+        correctKey: 'D',
+        explanation: 'الآيتان قاطعتان في أن من تكلم بكلمة الكفر كفر ولو كان مازحاً أو لاعباً أو خائفاً على دنياه، وأنه لا عذر لأحد إلا الملجأ بالإكراه مع اطمئنان قلبه بالإيمان.'
+      }
     ];
 
     // --- State ---
     let masteredIds = new Set(JSON.parse(localStorage.getItem('kashf_mastered') || '[]'));
     let missedIds = new Set(JSON.parse(localStorage.getItem('kashf_missed') || '[]'));
-    let answerFontSizeMultiplier = parseFloat(localStorage.getItem('kashf_font_scale') || '1.1');
+    let globalFontScale = parseInt(localStorage.getItem('kashf_global_font_scale') || '100', 10);
+    let currentShubhaFilter = 'all';
     
     let currentQuizItem = null;
     
@@ -520,8 +654,6 @@
         if (filter !== 'all' && item.category !== filter) return;
         
         const isMissed = missedIds.has(item.id);
-        const baseSize = 1; // rem
-        const fs = baseSize * answerFontSizeMultiplier;
         
         const card = document.createElement('div');
         card.className = `rounded-2xl border transition-all ${isMissed ? 'bg-amber-50/30 border-amber-200 dark:border-amber-900/50 dark:bg-amber-950/10' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800'}`;
@@ -534,7 +666,7 @@
             <div id="icon-${item.id}" class="w-8 h-8 flex-shrink-0 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-lg text-emerald-600 transition-transform">+</div>
           </button>
           <div id="answer-${item.id}" class="hidden px-4 sm:px-5 pb-5 pt-2 border-t border-slate-100 dark:border-slate-800">
-            <div class="text-emerald-900 dark:text-emerald-200 bg-emerald-50/50 dark:bg-emerald-950/20 p-4 rounded-xl leading-loose" style="font-size: ${fs}rem">
+            <div class="shubha-answer-content text-emerald-900 dark:text-emerald-200 bg-emerald-50/50 dark:bg-emerald-950/20 p-4 rounded-xl text-base sm:text-lg leading-loose transition-all duration-200">
               <span class="font-bold text-emerald-700 dark:text-emerald-400 block mb-2 text-sm">الرد السديد:</span>
               ${item.jawab}
             </div>
@@ -573,6 +705,7 @@
 
     function filterShubuhat(cat) {
       playAudioTone('click');
+      currentShubhaFilter = cat;
       document.querySelectorAll('.filter-btn').forEach(b => {
         b.classList.remove('bg-emerald-600', 'text-white');
         b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600');
@@ -585,14 +718,28 @@
       renderShubuhatAccordion(cat);
     }
 
-    function adjustAnswerFontSize(delta) {
+    // --- Global Page Zoom Logic ---
+    function adjustGlobalFontSize(delta) {
       playAudioTone('click');
-      answerFontSizeMultiplier += (delta * 0.1);
-      if(answerFontSizeMultiplier < 0.8) answerFontSizeMultiplier = 0.8;
-      if(answerFontSizeMultiplier > 1.6) answerFontSizeMultiplier = 1.6;
-      localStorage.setItem('kashf_font_scale', answerFontSizeMultiplier);
-      const cat = document.querySelector('.filter-btn.bg-emerald-600').getAttribute('data-cat') || 'all';
-      renderShubuhatAccordion(cat);
+      globalFontScale += (delta * 10);
+      if (globalFontScale < 80) globalFontScale = 80;
+      if (globalFontScale > 140) globalFontScale = 140;
+      applyGlobalFontSize();
+      showToast(`حجم خط الصفحة: ${globalFontScale}%`, '🔍');
+    }
+
+    function resetGlobalFontSize() {
+      playAudioTone('click');
+      globalFontScale = 100;
+      applyGlobalFontSize();
+      showToast('تمت استعادة حجم الخط الافتراضي (100%)', '🔄');
+    }
+
+    function applyGlobalFontSize() {
+      localStorage.setItem('kashf_global_font_scale', globalFontScale);
+      document.documentElement.style.fontSize = `${globalFontScale}%`;
+      const ind = document.getElementById('global-font-indicator');
+      if (ind) ind.innerText = `${globalFontScale}%`;
     }
 
     // --- Tab 6: Quiz (Cards Mode) ---
@@ -802,6 +949,7 @@
     // Boot
     document.addEventListener('DOMContentLoaded', () => {
       initTheme();
+      applyGlobalFontSize();
       renderShubuhatAccordion();
       updateAllCounters();
       setQuizMode('cards');
