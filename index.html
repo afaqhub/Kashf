@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>تشجير كشف الشبهات - المنصة التعليمية التفاعلية</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>المُعين في ضبط رسالة كشف الشبهات - منظومة تفاعلية</title>
   
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;500;600;700;800;900&family=Scheherazade+New:wght@600;700&display=swap" rel="stylesheet">
-  
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -16,438 +13,740 @@
       theme: {
         extend: {
           fontFamily: {
-            cairo: ['Cairo', 'sans-serif'],
-            quran: ['"Scheherazade New"', 'Amiri', 'serif']
+            sans: ['Amiri', 'Traditional Arabic', 'Tahoma', 'sans-serif'],
+          },
+          colors: {
+            emerald: {
+              850: '#064e3b',
+              950: '#022c22',
+            }
           }
         }
       }
     }
   </script>
 
+  <!-- Google Fonts for High Quality Arabic Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
   <style>
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); }
-    .dark ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
-    ::-webkit-scrollbar-thumb { background: #15803d; border-radius: 9999px; }
-    
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    
-    .animate-fadeIn { animation: fadeIn 0.3s ease-in-out forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    :root {
+      --app-font-scale: 100%;
+    }
+    html {
+      font-size: 16px;
+    }
+    body {
+      font-family: 'Tajawal', 'Amiri', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .font-amiri {
+      font-family: 'Amiri', serif;
+    }
+    /* تأثيرات التلاشي والظهور */
+    .animate-fadeIn {
+      animation: fadeIn 0.3s ease-in-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* أنماط مخصصة لطباعة التقرير والشهادة */
+    @media print {
+      body { background: white !important; color: black !important; font-size: 11pt; }
+      header, nav, #toast, #search-modal, .no-print, button { display: none !important; }
+      .tab-content { display: none !important; }
+      #tab-quiz { display: block !important; }
+      #quiz-mode-cards-view, #mcq-active-box { display: none !important; }
+      #mcq-result-dashboard { display: block !important; border: 2px solid #334155 !important; border-radius: 16px !important; padding: 20px !important; box-shadow: none !important; }
+      .print-only { display: block !important; }
+      .print-break-inside-avoid { break-inside: avoid; }
+    }
   </style>
 </head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen transition-colors duration-200 selection:bg-emerald-500 selection:text-white flex flex-col justify-between">
 
-<body class="font-cairo bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
-
-  <!-- Header -->
-  <header class="sticky top-0 z-40 backdrop-blur-md bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 shadow-sm pt-[env(safe-area-inset-top,0px)]">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-      <div class="flex items-start sm:items-center justify-between min-h-[4.5rem] py-2.5 gap-2 sm:gap-3">
-        
-        <div class="flex items-start sm:items-center space-x-2.5 space-x-reverse flex-1">
-          <div class="w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center text-white shadow-md mt-1 sm:mt-0">
-            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-            </svg>
-          </div>
-          <div class="flex-1">
-            <h1 class="text-base sm:text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5 leading-tight">
-              <span>تشجير كشف الشبهات</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-300 dark:border-amber-700/50 font-medium hidden md:inline-block">تفاعلي شامل</span>
-            </h1>
-            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 whitespace-normal break-words leading-snug">
-              تلخيص وتقريب لرسالة الشيخ محمد بن عبد الوهاب رحمه الله
-            </p>
-          </div>
+  <!-- الرأس العلوي الثابت مع مراعاة الجوال وعدم القص -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+    <div class="max-w-6xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2">
+      
+      <!-- العنوان والشعار -->
+      <div class="flex items-center gap-2.5 flex-1 min-w-[190px]">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
         </div>
-
-        <div class="flex items-center space-x-1.5 space-x-reverse sm:space-x-2.5 sm:space-x-reverse flex-shrink-0 mt-1 sm:mt-0">
-          <button onclick="switchTab('tab-review')" class="relative flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/50 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-xs font-semibold transition-all shadow-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-            </svg>
-            <span class="hidden sm:inline">المراجعة</span>
-            <span id="nav-review-badge" class="px-1.5 py-0.5 rounded-full bg-red-600 text-white text-[10px] font-bold min-w-[18px] text-center">0</span>
-          </button>
-
-          <!-- أزرار التكبير والتصغير لكامل الصفحة -->
-          <div class="flex items-center gap-0.5 sm:gap-1 bg-slate-100 dark:bg-slate-800/90 p-0.5 sm:p-1 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-sm">
-            <button onclick="adjustGlobalFontSize(-1)" title="تصغير حجم الخط" class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center font-black text-xs hover:bg-white dark:hover:bg-slate-700 rounded-lg text-slate-700 dark:text-slate-200 transition-all active:scale-90">A-</button>
-            <button onclick="resetGlobalFontSize()" title="إعادة الحجم الافتراضي" id="global-font-indicator" class="text-[10px] sm:text-xs font-bold px-1 text-emerald-700 dark:text-emerald-400 min-w-[34px] sm:min-w-[40px] text-center hover:opacity-75 transition-opacity cursor-pointer">100%</button>
-            <button onclick="adjustGlobalFontSize(1)" title="تكبير حجم الخط" class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center font-black text-xs hover:bg-white dark:hover:bg-slate-700 rounded-lg text-slate-700 dark:text-slate-200 transition-all active:scale-90">A+</button>
-          </div>
-
-          <button onclick="toggleTheme()" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-            <svg id="theme-icon-light" class="w-4 h-4 sm:w-5 sm:h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
-            </svg>
-            <svg id="theme-icon-dark" class="w-4 h-4 sm:w-5 sm:h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-            </svg>
-          </button>
+        <div class="leading-tight">
+          <h1 class="text-base sm:text-lg font-black tracking-tight text-emerald-900 dark:text-emerald-300">تشجير كشف الشبهات</h1>
+          <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium whitespace-normal break-words">تلخيص وتقريب لرسالة الشيخ محمد بن عبد الوهاب رحمه الله</p>
         </div>
-
       </div>
 
-      <!-- Navigation Tabs -->
-      <nav class="flex space-x-1 space-x-reverse overflow-x-auto py-2 border-t border-slate-100 dark:border-slate-800/80 no-scrollbar" aria-label="Tabs">
-        <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 shadow-sm">
-          📑 الخارطة والمدخل
+      <!-- أدوات التحكم السريعة (بحث، تكبير/تصغير، مراجعة، مظهر) -->
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end">
+        
+        <!-- زر البحث السريع المتقدم -->
+        <button onclick="openSearchModal()" title="البحث السريع في المتن والشبهات" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-bold transition shadow-sm">
+          <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+          <span class="hidden sm:inline">بحث...</span>
         </button>
-        <button onclick="switchTab('tab-intro')" id="btn-tab-intro" class="nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-slate-600 dark:text-slate-400 hover:text-emerald-600">
-          ١. تقرير التوحيد
+
+        <!-- أداة تكبير وتصغير الصفحة كاملة -->
+        <div class="flex items-center bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-0.5 shadow-sm">
+          <button onclick="adjustGlobalFontSize(-10)" title="تصغير الخط" class="w-7 h-7 flex items-center justify-center text-xs font-black text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition">A-</button>
+          <button onclick="resetGlobalFontSize()" title="إعادة الضبط" id="font-scale-badge" class="px-1.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-400 cursor-pointer">100%</button>
+          <button onclick="adjustGlobalFontSize(10)" title="تكبير الخط" class="w-7 h-7 flex items-center justify-center text-xs font-black text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition">A+</button>
+        </div>
+
+        <!-- زر الانتقال لصندوق المتعثرات -->
+        <button onclick="switchTab('tab-review')" title="صندوق مراجعة المتعثرات" class="relative flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-xs font-bold transition shadow-sm">
+          <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+          <span class="hidden md:inline">المتعثرات</span>
+          <span id="review-counter-badge" class="px-1.5 py-0.2 rounded-full text-[10px] font-black bg-amber-500 text-white">0</span>
         </button>
-        <button onclick="switchTab('tab-mujmal')" id="btn-tab-mujmal" class="nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-slate-600 dark:text-slate-400 hover:text-emerald-600">
-          ٢. الجواب المجمل
+
+        <!-- زر المظهر الليلي/النهاري -->
+        <button onclick="toggleTheme()" title="تبديل الوضع الليلي والنهاري" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition shadow-sm">
+          <span id="theme-icon" class="text-sm">🌙</span>
         </button>
-        <button onclick="switchTab('tab-shubuhat')" id="btn-tab-shubuhat" class="nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-slate-600 dark:text-slate-400 hover:text-emerald-600">
-          ٣. الشبهات المفصلة
-        </button>
-        <button onclick="switchTab('tab-differences')" id="btn-tab-differences" class="nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-slate-600 dark:text-slate-400 hover:text-emerald-600">
-          ٤. المشركون الأوائل
-        </button>
-        <button onclick="switchTab('tab-conclusion')" id="btn-tab-conclusion" class="nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-slate-600 dark:text-slate-400 hover:text-emerald-600">
-          ٥. الخاتمة
-        </button>
-        <button onclick="switchTab('tab-quiz')" id="btn-tab-quiz" class="nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all text-purple-700 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40">
-          🎯 الاختبار الذاتي
-        </button>
-        <button onclick="switchTab('tab-review')" id="btn-tab-review" class="nav-tab px-3 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40">
-          ⚠️ المتعثرات
-        </button>
-      </nav>
+
+      </div>
     </div>
+
+    <!-- شريط التبويبات الرئيسي المتجاوب والسلس -->
+    <nav class="bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800/80 px-2 overflow-x-auto no-scrollbar">
+      <div class="max-w-6xl mx-auto flex items-center gap-1 py-1.5 text-xs font-bold whitespace-nowrap min-w-max">
+        <button onclick="switchTab('tab-overview')" id="nav-btn-tab-overview" class="nav-tab-btn px-3 py-1.5 rounded-xl transition-all duration-150 text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800">📋 الخارطة والمدخل</button>
+        <button onclick="switchTab('tab-intro')" id="nav-btn-tab-intro" class="nav-tab-btn px-3 py-1.5 rounded-xl transition-all duration-150 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">١. تقرير أصل التوحيد</button>
+        <button onclick="switchTab('tab-mujmal')" id="nav-btn-tab-mujmal" class="nav-tab-btn px-3 py-1.5 rounded-xl transition-all duration-150 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">٢. الجواب المجمل</button>
+        <button onclick="switchTab('tab-shubuhat')" id="nav-btn-tab-shubuhat" class="nav-tab-btn px-3 py-1.5 rounded-xl transition-all duration-150 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">٣. الشبهات المفصلة (١٣)</button>
+        <button onclick="switchTab('tab-differences')" id="nav-btn-tab-differences" class="nav-tab-btn px-3 py-1.5 rounded-xl transition-all duration-150 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">٤. شرك الأولين والمتأخرين</button>
+        <button onclick="switchTab('tab-conclusion')" id="nav-btn-tab-conclusion" class="nav-tab-btn px-3 py-1.5 rounded-xl transition-all duration-150 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">٥. الخاتمة وحكم المكره</button>
+        <button onclick="switchTab('tab-quiz')" id="nav-btn-tab-quiz" class="nav-tab-btn px-3 py-1.5 rounded-xl transition-all duration-150 text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800">🎯 الاختبار والاستيعاب</button>
+        <button onclick="switchTab('tab-review')" id="nav-btn-tab-review" class="nav-tab-btn px-3 py-1.5 rounded-xl transition-all duration-150 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/30">⚠️ صندوق المتعثرات</button>
+      </div>
+    </nav>
   </header>
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 py-6 flex-grow w-full">
 
-  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
-
-    <!-- ==================== TAB 0: OVERVIEW ==================== -->
-    <section id="tab-overview" class="tab-content space-y-6 animate-fadeIn">
-      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-900 via-emerald-800 to-slate-900 text-white p-6 sm:p-10 shadow-xl">
-        <div class="relative z-10 max-w-3xl space-y-4">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 text-xs font-semibold">
+    <!-- ==================== TAB 1: OVERVIEW ==================== -->
+    <section id="tab-overview" class="tab-content block space-y-6 animate-fadeIn">
+      <!-- بطاقة المقدمة البصرية الكبرى -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-800 via-teal-900 to-slate-950 p-6 sm:p-10 text-white shadow-xl border border-emerald-700/50">
+        <div class="relative z-10 max-w-3xl space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-200 text-xs font-bold border border-emerald-400/30">
             <span>تحقيق التوحيد ونقض مغالطات الشرك والوسائط</span>
           </div>
-          <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">المُعين في ضبط رسالة «كشف الشبهات»</h2>
-          <p class="text-sm sm:text-base text-emerald-100/90 leading-relaxed">
-            رسالة عقدية أصلية صنّفها الإمام محمد بن عبد الوهاب لبيان حقيقة دين الرسل، ونقض شبهات القبوريين الذين تذرعوا بالشفاعة واتخاذ الوسائط مضاهاةً لمشركي الجاهلية الأولى.
+          <h2 class="text-2xl sm:text-4xl font-black font-amiri leading-tight">المُعين في ضبط وفهم رسالة «كشف الشبهات»</h2>
+          <p class="text-sm sm:text-base text-emerald-100/90 leading-relaxed">رسالة عقدية جليلة سطّرها الإمام المجدد محمد بن عبد الوهاب رحمه الله (ت ١٢٠٦هـ) لبيان حقيقة دين الرسل، وإرساء الجواب المجمل والمفصل لدحض شبهات من تذرعوا بالشفاعة واتخاذ الوسائط عند الله تعالى مضاهاةً لمشركي الجاهلية الأولى.</p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-emerald-700/60 mt-6 text-center">
+          <div class="p-3 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div class="text-2xl sm:text-3xl font-black text-amber-300">١٣</div>
+            <div class="text-xs text-emerald-100 font-medium mt-1">شبهة مع ردها المحكم</div>
+          </div>
+          <div class="p-3 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div class="text-2xl sm:text-3xl font-black text-teal-300">٢</div>
+            <div class="text-xs text-emerald-100 font-medium mt-1">مسلكان للرد (مجمل ومفصل)</div>
+          </div>
+          <div class="p-3 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div class="text-2xl sm:text-3xl font-black text-emerald-300">٥</div>
+            <div class="text-xs text-emerald-100 font-medium mt-1">فوائد عقدية كبرى</div>
+          </div>
+          <div class="p-3 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+            <div id="mastery-rate-stat" class="text-2xl sm:text-3xl font-black text-purple-300">0%</div>
+            <div class="text-xs text-emerald-100 font-medium mt-1">معدل الإتقان الذاتي</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- تشجير الرسالة الهيكلي (Mind-Map Structure) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div onclick="switchTab('tab-intro')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 p-5 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 shadow-sm transition-all hover:-translate-y-1">
+          <div class="flex items-center justify-between mb-3">
+            <span class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-black flex items-center justify-center text-sm">١</span>
+            <span class="text-xs text-slate-400 group-hover:text-emerald-600 transition">انتقال ⬅️</span>
+          </div>
+          <h3 class="font-bold text-slate-900 dark:text-white mb-2">المقدمة: أصل التوحيد</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">تقرير توحيد الألوهية، إقرار الكفار بالربوبية، معنى لا إله إلا الله، والفوائد العقدية الـ 5.</p>
+        </div>
+
+        <div onclick="switchTab('tab-shubuhat')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 p-5 border border-slate-200 dark:border-slate-800 hover:border-teal-500 shadow-sm transition-all hover:-translate-y-1">
+          <div class="flex items-center justify-between mb-3">
+            <span class="w-8 h-8 rounded-xl bg-teal-100 dark:bg-teal-950/60 text-teal-800 dark:text-teal-300 font-black flex items-center justify-center text-sm">٢</span>
+            <span class="text-xs text-slate-400 group-hover:text-teal-600 transition">انتقال ⬅️</span>
+          </div>
+          <h3 class="font-bold text-slate-900 dark:text-white mb-2">الرد على أهل الباطل</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">الجواب المجمل برد المتشابه، والجواب المفصل بنقض الشبهات الـ 13 بأدلة القرآن والوقائع.</p>
+        </div>
+
+        <div onclick="switchTab('tab-conclusion')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 p-5 border border-slate-200 dark:border-slate-800 hover:border-purple-500 shadow-sm transition-all hover:-translate-y-1">
+          <div class="flex items-center justify-between mb-3">
+            <span class="w-8 h-8 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 font-black flex items-center justify-center text-sm">٣</span>
+            <span class="text-xs text-slate-400 group-hover:text-purple-600 transition">انتقال ⬅️</span>
+          </div>
+          <h3 class="font-bold text-slate-900 dark:text-white mb-2">الفوارق والخاتمة</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">أوجه خفة شرك الأولين عن المتأخرين، تلازم القلب واللسان والعمل، وعذر الإكراه المعتبر.</p>
+        </div>
+      </div>
+    </section>
+    <!-- ==================== TAB 2: INTRODUCTION ==================== -->
+    <section id="tab-intro" class="tab-content hidden space-y-6 animate-fadeIn">
+      <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+        <h2 class="text-2xl font-black font-amiri text-emerald-900 dark:text-emerald-300">أولاً: المقدمة - تقرير أصل التوحيد</h2>
+        <p class="text-xs sm:text-sm text-slate-500">حقيقة دعوة الرسل من نوح إلى محمد ﷺ وتوصيف شرك الأولين</p>
+      </div>
+
+      <div class="space-y-4">
+        <!-- أصل التوحيد -->
+        <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-sm space-y-3">
+          <div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold">
+            <span class="text-lg">🌿</span>
+            <h3 class="text-lg font-bold">١. حقيقة التوحيد ودعوة الرسل</h3>
+          </div>
+          <p class="text-sm sm:text-base leading-loose text-slate-700 dark:text-slate-300">
+            حقيقة التوحيد: <strong class="text-emerald-800 dark:text-emerald-300">إفراد الله سبحانه بالعبادة</strong>، وهو دين الرسل جميعاً؛ أولهم نوح عليه السلام أرسله الله لما غلا قومه في الصالحين (ود، وسواع، ويغوث، ويعوق، ونسر)، وآخرهم محمد ﷺ الذي كسر صور وتماثيل الصالحين، وقد بُعث إلى أناس يتعبدون ويحجون ويتصدقون ويذكرون الله كثيراً ولكنهم أشركوا بقصدهم الوسائط.
           </p>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-            <div class="bg-white/10 rounded-2xl p-3 border border-white/10 text-center">
-              <span class="block text-2xl font-black text-amber-300">١٣</span>
-              <span class="text-xs text-emerald-100">شبهة مفصلة</span>
+        </div>
+
+        <!-- حال المشركين وإقرارهم بالربوبية -->
+        <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-sm space-y-3">
+          <div class="flex items-center gap-2 text-amber-700 dark:text-amber-400 font-bold">
+            <span class="text-lg">⚖️</span>
+            <h3 class="text-lg font-bold">٢. حال المشركين وإقرارهم بالربوبية</h3>
+          </div>
+          <p class="text-sm sm:text-base leading-loose text-slate-700 dark:text-slate-300">
+            كفار قريش كانوا يقرّون بتوحيد الربوبية: أن الله هو الخالق، الرازق، المدبر وحده لا شريك له. ولكنهم جعلوا وسائط من المخلوقين (الملائكة، عيسى، الأولياء والصالحين) يطلبون منهم القربة والشفاعة عند الله، <strong class="text-amber-800 dark:text-amber-300">فلم يدخلهم ذلك الإقرار في الإسلام، واستحلّ النبي ﷺ دماءهم وأموالهم لقصدهم غير الله.</strong>
+          </p>
+        </div>
+
+        <!-- معنى لا إله إلا الله -->
+        <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-sm space-y-3">
+          <div class="flex items-center gap-2 text-teal-700 dark:text-teal-400 font-bold">
+            <span class="text-lg">📜</span>
+            <h3 class="text-lg font-bold">٣. معنى كلمة الإخلاص «لا إله إلا الله»</h3>
+          </div>
+          <p class="text-sm sm:text-base leading-loose text-slate-700 dark:text-slate-300">
+            التوحيد الذي دعت إليه الرسل وأنكره المشركون هو توحيد الألوهية والعبادة؛ قال تعالى عنهم: ﴿أَجَعَلَ الْآلِهَةَ إِلَٰهًا وَاحِدًا﴾. والإله عندهم هو: <em>المقصود المعبود الذي يُدعى ويُرجى ويُتعلق به</em>، لا مجرد الخالق الصانع. فكفار قريش كانوا أعلم بمعنى «لا إله إلا الله» من كثير ممن ينتسب إلى الإسلام اليوم ممن يظنها مجرد الإقرار بالوجود أو القدرة على الاختراع!
+          </p>
+        </div>
+
+        <!-- الفوائد العقدية الخمس -->
+        <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-sm space-y-3">
+          <div class="flex items-center gap-2 text-purple-700 dark:text-purple-400 font-bold">
+            <span class="text-lg">💎</span>
+            <h3 class="text-lg font-bold">٤. فوائد معرفة هذا الأصل العظيم (خمس فوائد كبرى)</h3>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs sm:text-sm">
+              <strong class="text-emerald-700 dark:text-emerald-400">١. الفرح بفضل الله ورحمته:</strong> استشعار نعمة الهداية للتوحيد الصافي الخالص.
             </div>
-            <div class="bg-white/10 rounded-2xl p-3 border border-white/10 text-center">
-              <span class="block text-2xl font-black text-emerald-300">٢</span>
-              <span class="text-xs text-emerald-100">مسلكان للرد</span>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs sm:text-sm">
+              <strong class="text-red-700 dark:text-red-400">٢. الخوف العظيم من الشرك:</strong> فقد يقول الإنسان كلمة يكفر بها وهو يظنها تقربه إلى الله!
             </div>
-            <div class="bg-white/10 rounded-2xl p-3 border border-white/10 text-center">
-              <span class="block text-2xl font-black text-blue-300">٥</span>
-              <span class="text-xs text-emerald-100">فوائد عقدية</span>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs sm:text-sm">
+              <strong class="text-amber-700 dark:text-amber-400">٣. سنة التدافع والابتلاء:</strong> جعل الله لكل نبي أعداءً يلبسون على الناس بزخرف القول والشبهات.
             </div>
-            <div class="bg-white/10 rounded-2xl p-3 border border-white/10 text-center cursor-pointer hover:bg-white/15" onclick="switchTab('tab-quiz')">
-              <span id="overview-mastery-rate" class="block text-2xl font-black text-purple-300">0%</span>
-              <span class="text-xs text-emerald-100">إتقان الشبهات</span>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs sm:text-sm">
+              <strong class="text-blue-700 dark:text-blue-400">٤. وجوب تعلم الحجج والبراهين:</strong> فالعامي الموحد من أهل السنة يغلب الألف من علماء المشركين ببرهان التوحيد.
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs sm:text-sm sm:col-span-2">
+              <strong class="text-teal-700 dark:text-teal-400">٥. شمول القرآن لدحض الباطل:</strong> ما من صاحب باطل يأتي بحجة إلا وفي كتاب الله ما ينقضها ويبين عوارها.
             </div>
           </div>
         </div>
       </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div onclick="switchTab('tab-intro')" class="cursor-pointer rounded-2xl bg-white dark:bg-slate-900 p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
-          <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">أولاً: تقرير التوحيد</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">حقيقة دعوة الرسل، معنى الإله، وحال كفار قريش مع إقرارهم بالربوبية.</p>
-        </div>
-        <div onclick="switchTab('tab-shubuhat')" class="cursor-pointer rounded-2xl bg-white dark:bg-slate-900 p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
-          <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">ثانياً: الرد على الباطل</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">الجواب المجمل برد المتشابه للمحكم، وتفكيك الشبهات الـ 13 بالتفصيل.</p>
-        </div>
-        <div onclick="switchTab('tab-conclusion')" class="cursor-pointer rounded-2xl bg-white dark:bg-slate-900 p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
-          <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">ثالثاً: الخاتمة والتنبيهات</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">تلازم القلب والعمل، وأحكام المازح والمكره، والفارق بين الأولين والمتأخرين.</p>
-        </div>
-      </div>
     </section>
 
-    <!-- ==================== TAB 1: INTRO ==================== -->
-    <section id="tab-intro" class="tab-content hidden space-y-6">
-      <div class="border-r-4 border-emerald-600 pr-4">
-        <h2 class="text-xl sm:text-2xl font-bold">أولاً: المقدمة - تقرير أصل التوحيد</h2>
-      </div>
-      
-      <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-4">
-        <h3 class="text-lg font-bold text-emerald-800 dark:text-emerald-400">١. حقيقة التوحيد ودين الرسل</h3>
-        <p class="text-sm text-slate-700 dark:text-slate-300 leading-loose">التوحيد هو إفراد الله بالعبادة، وهو دين الرسل جميعاً، أولهم نوح أُرسل لما غلا قومه في الصالحين وعبدوهم، وآخرهم محمد ﷺ بُعث يكسر صور الصالحين لقوم يتعبدون ويحجون لكنهم اتخذوا وسائط.</p>
+    <!-- ==================== TAB 3: MUJMAL ==================== -->
+    <section id="tab-mujmal" class="tab-content hidden space-y-6 animate-fadeIn">
+      <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+        <h2 class="text-2xl font-black font-amiri text-teal-900 dark:text-teal-300">ثانياً: الجواب المُجمل - رد المتشابه إلى المحكم</h2>
+        <p class="text-xs sm:text-sm text-slate-500">الأصل العام المعصوم لكل موحد في دفع كل لبس وشبهة</p>
       </div>
 
-      <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-4">
-        <h3 class="text-lg font-bold text-amber-700 dark:text-amber-400">٢. حال المشركين وإقرارهم بالربوبية</h3>
-        <p class="text-sm text-slate-700 dark:text-slate-300 leading-loose">كفار قريش كانوا يقرّون بأن الله هو الخالق الرازق المدبر، ولكنهم جعلوا وسائط من المخلوقين (الملائكة، الأولياء) يطلبون منهم القربة والشفاعة، فلم يدخلهم ذلك الإقرار في الإسلام، واستحلّ النبي ﷺ دماءهم.</p>
-      </div>
-
-      <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-4">
-        <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">٣. حقيقة معنى «لا إله إلا الله» وفوائد التوحيد</h3>
-        <p class="text-sm text-slate-700 dark:text-slate-300 leading-loose">الإله هو المعبود المقصود الذي يُدعى، وليس مجرد الخالق. وكفار قريش كانوا أعلم بمعناها من المتأخرين. ومعرفة ذلك تورث الفرح بفضل الله، والخوف العظيم من الشرك، ومعرفة أن للباطل شبهات يجب تعلم الحجج لنقضها بالقرآن.</p>
-      </div>
-    </section>
-
-    <!-- ==================== TAB 2: MUJMAL ==================== -->
-    <section id="tab-mujmal" class="tab-content hidden space-y-6">
-      <div class="border-r-4 border-blue-600 pr-4">
-        <h2 class="text-xl sm:text-2xl font-bold">ثانياً (أ): الجواب المُجمل - رد المتشابه إلى المحكم</h2>
-      </div>
-      <div class="rounded-3xl bg-gradient-to-br from-blue-900 to-indigo-950 text-white p-6 sm:p-10 shadow-xl space-y-4">
-        <blockquote class="font-quran text-lg sm:text-2xl text-amber-200 leading-loose text-center">
-          ﴿فَأَمَّا الَّذِينَ فِي قُلُوبِهِمْ زَيْغٌ فَيَتَّبِعُونَ مَا تَشَابَهَ مِنْهُ ابْتِغَاءَ الْفِتْنَةِ﴾
-        </blockquote>
-        <p class="text-base sm:text-lg leading-loose mt-4">
-          المُحْكَم البيّن القاطع: أن النبي ﷺ قاتل المشركين مع إقرارهم بالربوبية لأنهم اتخذوا الصالحين وسائط. فإذا ألقى الخصم شبهة متشابهة، فقل بثبات: <span class="font-bold text-amber-300">«ما ذكرته لا أعرف معناه، لكني أقطع يقيناً أن كلام الله لا يتناقض، وأن كلام النبي ﷺ لا يخالف القرآن!»</span>.
+      <div class="rounded-3xl bg-gradient-to-r from-teal-950 to-slate-900 p-6 sm:p-8 text-white border border-teal-800/50 shadow-lg space-y-4">
+        <div class="inline-block px-3 py-1 rounded-lg bg-teal-800/60 text-teal-200 text-xs font-bold">
+          قاعدة قرآنية أصيلة
+        </div>
+        <h3 class="text-xl sm:text-2xl font-bold font-amiri leading-relaxed">
+          ﴿هُوَ الَّذِي أَنزَلَ عَلَيْكَ الْكِتَابَ مِنْهُ آيَاتٌ مُّحْكَمَاتٌ هُنَّ أُمُّ الْكِتَابِ وَأُخَرُ مُتَشَابِهَاتٌ ۖ فَأَمَّا الَّذِينَ فِي قُلُوبِهِمْ زَيْغٌ فَيَتَّبِعُونَ مَا تَشَابَهَ مِنْهُ﴾
+        </h3>
+        <p class="text-sm sm:text-base text-teal-100/90 leading-loose">
+          المحكم البين القطعي في كتاب الله وسنة رسوله ﷺ: أن النبي ﷺ قاتل مشركي العرب واستحل دماءهم وأموالهم مع إقرارهم بالخلق والرزق، وإنما كان كفرهم لتعلقهم على الملائكة والأنبياء والأولياء يرجون شفاعتهم عند الله.
         </p>
+        <div class="p-4 rounded-2xl bg-teal-900/50 border border-teal-700/60 space-y-2">
+          <h4 class="font-bold text-amber-300 text-sm">كيف تقول لصاحب الشبهة؟</h4>
+          <p class="text-xs sm:text-sm leading-relaxed text-slate-200">
+            «ما ذكرتَه من كلام مشتبه لا أفهم حقيقة مرادك منه، لكني أقطع يقيناً أن كلام الله لا يناقض بعضه بعضاً، وأن كلام رسوله ﷺ حق لا يخالف القرآن؛ والمحكم الصريح حرّم صرف العبادة لغير الله وقاتل عليه النبي ﷺ، فما عارضه من تلبيس فهو باطل مردود».
+          </p>
+        </div>
+        <p class="text-xs text-teal-300 italic">وهذا جواب سديد وقاطع لا يدرك قيمته وأثره في المناظرة إلا من وفقه الله تعالى.</p>
       </div>
     </section>
-
-    <!-- ==================== TAB 3: SHUBUHAT ==================== -->
-    <section id="tab-shubuhat" class="tab-content hidden space-y-6">
-      <div class="flex flex-col sm:flex-row justify-between gap-4 border-r-4 border-emerald-600 pr-4">
+    <!-- ==================== TAB 4: SHUBUHAT ==================== -->
+    <section id="tab-shubuhat" class="tab-content hidden space-y-6 animate-fadeIn">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
         <div>
-          <h2 class="text-xl sm:text-2xl font-bold">ثانياً (ب): الشبهات وأجوبتها المفصلة</h2>
-          <p class="text-sm text-slate-500">انقر على الزر (+) لإظهار الرد التفصيلي</p>
+          <h2 class="text-2xl font-black font-amiri text-emerald-900 dark:text-emerald-300">ثالثاً: الجواب المفصل - الشبهات الـ (١٣) وأجوبتها</h2>
+          <p class="text-xs sm:text-sm text-slate-500">تفنيد حجج القبوريين والمخالفين بالدليل القرآني والبرهان التاريخي</p>
         </div>
+        <!-- أزرار توسيع وطي الكل -->
         <div class="flex items-center gap-2">
-          <button onclick="expandAllShubuhat(true)" class="px-3 py-1.5 text-xs font-semibold bg-slate-200 dark:bg-slate-800 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-700 transition">توسيع الكل</button>
-          <button onclick="expandAllShubuhat(false)" class="px-3 py-1.5 text-xs font-semibold bg-slate-200 dark:bg-slate-800 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-700 transition">طي الكل</button>
+          <button onclick="toggleAllShubuhat(true)" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-bold transition">توسيع الكل</button>
+          <button onclick="toggleAllShubuhat(false)" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-bold transition">طي الكل</button>
         </div>
-      </div>
-      
-      <div class="flex flex-wrap gap-2" id="shubuhat-filters">
-        <button onclick="filterShubuhat('all')" class="filter-btn active-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 text-white" data-cat="all">الكل (١٣)</button>
-        <button onclick="filterShubuhat('tawassul')" class="filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300" data-cat="tawassul">الشفاعة والوسائط</button>
-        <button onclick="filterShubuhat('takfir')" class="filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300" data-cat="takfir">الشعائر والتكفير</button>
       </div>
 
-      <div class="space-y-4" id="shubuhat-accordion-container"></div>
-    </section>
-
-    <!-- ==================== TAB 4: DIFFERENCES ==================== -->
-    <section id="tab-differences" class="tab-content hidden space-y-6">
-      <div class="border-r-4 border-amber-600 pr-4">
-        <h2 class="text-xl sm:text-2xl font-bold">مسألة: شرك الأولين والمتأخرين</h2>
+      <!-- تصنيفات الشبهات السريعة -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs font-bold">
+        <button onclick="filterShubuhat('all')" class="shubha-filter-btn px-3 py-1.5 rounded-xl bg-emerald-600 text-white shadow-sm" data-filter="all">الكل (١٣)</button>
+        <button onclick="filterShubuhat('tawassul')" class="shubha-filter-btn px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300" data-filter="tawassul">الشفاعة والوسائط</button>
+        <button onclick="filterShubuhat('asnam')" class="shubha-filter-btn px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300" data-filter="asnam">الأصنام والصالحين</button>
+        <button onclick="filterShubuhat('takfeer')" class="shubha-filter-btn px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300" data-filter="takfeer">ضوابط التكفير والردة</button>
+        <button onclick="filterShubuhat('istighatha')" class="shubha-filter-btn px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300" data-filter="istighatha">الاستغاثة</button>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-          <h3 class="text-lg font-bold mb-3 text-amber-700 dark:text-amber-400">الفارق الأول: الإخلاص بالشدائد</h3>
-          <p class="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-loose">المشركون الأوائل يخلصون الدعاء لله في الشدائد ﴿فإذا ركبوا في الفلك دعوا الله مخلصين﴾، بينما المتأخرون شركهم دائم في الرخاء، بل يشتد استغاثتهم بالأولياء في الكروب.</p>
-        </div>
-        <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-          <h3 class="text-lg font-bold mb-3 text-amber-700 dark:text-amber-400">الفارق الثاني: منزلة المعبودين</h3>
-          <p class="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-loose">الأولون عبدوا أنبياء وملائكة مقربين، بينما المتأخرون يدعون أناساً فيهم الفساق والمجاهيل ومن عُرف بإسقاط التكاليف، ويعتقدون فيهم النفع والضر.</p>
-        </div>
+
+      <!-- قائمة الشبهات التفاعلية (Accordion Container) -->
+      <div id="shubuhat-accordion-container" class="space-y-3.5">
+        <!-- يتم ملؤها ديناميكياً بالجافاسكربت -->
       </div>
     </section>
-
-    <!-- ==================== TAB 5: CONCLUSION ==================== -->
-    <section id="tab-conclusion" class="tab-content hidden space-y-6">
-      <div class="border-r-4 border-purple-600 pr-4">
-        <h2 class="text-xl sm:text-2xl font-bold">ثالثاً: الخاتمة والتنبيهات</h2>
+    <!-- ==================== TAB 5: DIFFERENCES ==================== -->
+    <section id="tab-differences" class="tab-content hidden space-y-6 animate-fadeIn">
+      <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+        <h2 class="text-2xl font-black font-amiri text-amber-900 dark:text-amber-300">رابعاً: شرك الأولين أخف من شرك المتأخرين بأمرين</h2>
+        <p class="text-xs sm:text-sm text-slate-500">تحرير المسألة العقدية الجليلة التي أوردها المصنف في بيان شدة انحراف المتأخرين</p>
       </div>
-      <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-6">
-        <p class="text-sm sm:text-base leading-loose">التوحيد لا بد أن يكون بالقلب واللسان والعمل. ومن عرف الحق وتركه خوفاً على دنيا فليس بمسلم.</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="p-5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <span class="font-bold text-lg text-amber-700 dark:text-amber-400 block mb-2">المازح في الدين:</span>
-            <blockquote class="font-quran text-lg sm:text-xl text-slate-800 dark:text-slate-200 mb-2">﴿لَا تَعْتَذِرُوا قَدْ كَفَرْتُم بَعْدَ إِيمَانِكُمْ﴾</blockquote>
-            <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">نزلت في أقوام قالوا كلمة الكفر استهزاءً ومزاحاً في تبوك فكفروا.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-4">
+          <div class="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 flex items-center justify-center font-black text-xl">١</div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white">الفارق الأول: الإخلاص عند الشدائد</h3>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-loose">
+            الأولون كانوا يشركون بالله في الرخاء، فإذا حلت بهم الشدائد وأحاط بهم الكرب أخلصوا الدعاء لله وحده: <strong class="text-amber-700 dark:text-amber-400 font-amiri text-base">﴿فَإِذَا رَكِبُوا فِي الْفُلْكِ دَعَوُا اللَّهَ مُخْلِصِينَ لَهُ الدِّينَ فَلَمَّا نَجَّاهُمْ إِلَى الْبَرِّ إِذَا هُمْ يُشْرِكُونَ﴾</strong>.
+          </p>
+          <div class="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-xs text-amber-900 dark:text-amber-300">
+            أما مشركو زمان المصنف ومن ضاهاهم؛ فشركهم دائم في الرخاء والشدة، بل يشتد استنجاؤهم بالأولياء والموتى عند اشتداد الكرب والغرق!
           </div>
-          <div class="p-5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <span class="font-bold text-lg text-emerald-700 dark:text-emerald-400 block mb-2">عذر الإكراه في إظهار الكفر:</span>
-            <blockquote class="font-quran text-lg sm:text-xl text-slate-800 dark:text-slate-200 mb-2">﴿إِلَّا مَنْ أُكْرِهَ وَقَلْبُهُ مُطْمَئِنٌّ بِالْإِيمَانِ﴾</blockquote>
-            <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">لم يعذر الله أحداً تعمّد التكلم بالكفر لحظ دنيوي أو مداراة إلا المكره الملجأ مع طمأنينة قلبه بالإيمان.</p>
+        </div>
+
+        <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-4">
+          <div class="w-12 h-12 rounded-2xl bg-teal-100 dark:bg-teal-950/60 text-teal-800 dark:text-teal-300 flex items-center justify-center font-black text-xl">٢</div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white">الفارق الثاني: حال من يُقصد ويُدعى</h3>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-loose">
+            الأولون كانوا يدعون مع الله مقربين صالحين (كالأنبياء وعيسى وأمه وعزير والملائكة والأولياء)، أو أشجاراً وأحجاراً مطيعة لا تعصي الله ولا تفجر.
+          </p>
+          <div class="p-3.5 rounded-xl bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800/60 text-xs text-teal-900 dark:text-teal-300">
+            أما المتأخرون فيدعون أناساً فيهم الفساق والمجاهيل ومن عُرف بإسقاط التكاليف الشرعية، ومن لا خلاق له، ومع ذلك يعتقدون فيهم التصرف والنفع والضر!
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ==================== TAB 6: QUIZ / TEST (TWO MODES) ==================== -->
-    <section id="tab-quiz" class="tab-content hidden space-y-6">
-      
-      <!-- Header & Mode Switcher -->
-      <div class="flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
-        <div class="text-center sm:text-right w-full sm:w-auto">
-          <h2 class="text-xl sm:text-2xl font-bold text-purple-700 dark:text-purple-400">منصة الاختبار والتقييم</h2>
-          <p class="text-xs sm:text-sm text-slate-500 mt-1">اختر أسلوب الاختبار الذي يناسبك</p>
-        </div>
-        
-        <div class="flex bg-slate-100 dark:bg-slate-800 p-1.5 rounded-xl w-full sm:w-auto">
-          <button id="btn-mode-cards" onclick="setQuizMode('cards')" class="flex-1 px-4 py-2 rounded-lg text-xs font-bold transition-all bg-purple-600 text-white shadow-sm">
-            البطاقات الذهنية
-          </button>
-          <button id="btn-mode-mcq" onclick="setQuizMode('mcq')" class="flex-1 px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-600 dark:text-slate-300 hover:text-purple-600">
-            اختبار الخيارات (MCQ)
-          </button>
-        </div>
+    <!-- ==================== TAB 6: CONCLUSION ==================== -->
+    <section id="tab-conclusion" class="tab-content hidden space-y-6 animate-fadeIn">
+      <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+        <h2 class="text-2xl font-black font-amiri text-purple-900 dark:text-purple-300">خامساً: الخاتمة - تلازم أركان التوحيد وحكم المكره</h2>
+        <p class="text-xs sm:text-sm text-slate-500">حقيقة الإيمان والتحذير من إظهار الكفر لدنيا أو مداراة</p>
       </div>
 
-      <!-- Mode 1: Flashcards -->
-      <div id="quiz-mode-cards-view" class="max-w-3xl mx-auto space-y-4">
-        <div class="text-left mb-2">
-          <span id="quiz-mastery-text" class="text-sm font-bold text-purple-600">تم إتقان: 0 من 13</span>
-        </div>
-        <div id="quiz-container" class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-md text-center">
-          <span id="quiz-card-number" class="px-4 py-1.5 rounded-full text-xs font-bold bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300 mb-4 inline-block">شبهة عشوائية</span>
-          <div id="quiz-shubha-text" class="text-lg sm:text-xl font-bold p-5 bg-amber-50 dark:bg-slate-800 rounded-xl mb-5 leading-loose">...</div>
-          
-          <button id="quiz-reveal-btn" onclick="revealQuizAnswer()" class="px-6 py-3 rounded-xl bg-emerald-600 text-white font-bold text-sm mx-auto shadow-md hover:bg-emerald-700 transition transform active:scale-95">إظهار الجواب السديد للمقارنة</button>
-          
-          <div id="quiz-answer-section" class="hidden mt-5 pt-5 border-t border-slate-200 dark:border-slate-700 animate-fadeIn">
-            <div id="quiz-answer-text" class="text-base sm:text-lg font-medium text-emerald-900 dark:text-emerald-100 leading-loose p-5 bg-emerald-50/80 dark:bg-emerald-900/40 rounded-xl mb-5 text-right border border-emerald-100 dark:border-emerald-800">...</div>
-            <p class="text-sm font-bold mb-3 text-slate-600 dark:text-slate-400">كيف كان جوابك الذي استحضرته في ذهنك؟</p>
-            <div class="flex flex-col sm:flex-row gap-3 justify-center">
-              <button onclick="handleQuizVerdict(true)" class="px-5 py-3 rounded-xl bg-emerald-600 text-white font-bold text-sm flex-1 shadow hover:bg-emerald-700 transition">✅ أصبتُ (إتقان)</button>
-              <button onclick="handleQuizVerdict(false)" class="px-5 py-3 rounded-xl bg-amber-600 text-white font-bold text-sm flex-1 shadow hover:bg-amber-700 transition">⚠️ أخطأت (ترحيل للمراجعة)</button>
+      <div class="space-y-4">
+        <!-- تلازم القلب واللسان والعمل -->
+        <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-3">
+          <h3 class="text-lg font-bold text-purple-800 dark:text-purple-400">١. التوحيد لا بد فيه من القلب واللسان والجوارح</h3>
+          <p class="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-loose">
+            التوحيد لا بد أن يجتمع فيه القلب واللسان والجوارح؛ فإن اختل شيء منها لم يكن الرجل مسلماً:
+          </p>
+          <div class="space-y-2.5 pt-2">
+            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs sm:text-sm flex gap-3 items-start">
+              <span class="text-red-500 font-bold">●</span>
+              <span><strong>الكافر المعاند:</strong> من عرف التوحيد بقلبه ولم يعمل به وينقد له فهو كافر معاند (كفرعون وإبليس).</span>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs sm:text-sm flex gap-3 items-start">
+              <span class="text-amber-500 font-bold">●</span>
+              <span><strong>المنافق:</strong> من عمل بالتوحيد في الظاهر دون اعتقاد الباطن فهو منافق في الدرك الأسفل من النار.</span>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs sm:text-sm flex gap-3 items-start">
+              <span class="text-purple-500 font-bold">●</span>
+              <span><strong>من ترك التوحيد للدنيا:</strong> من عرف الحق بقلبه وتركه وعمل بالشرك ظاهراً خوفاً على دنيا أو مال أو منصب أو مداراة لأحد فهو غير معذور ولا مسلم.</span>
             </div>
           </div>
         </div>
-        <div class="text-center mt-4">
-          <button onclick="pickRandomQuizQuestion()" class="text-sm font-semibold text-slate-500 hover:text-purple-600 underline transition">تخطي وسحب شبهة أخرى</button>
+
+        <!-- تدبر الآيتين العظيمتين -->
+        <div class="rounded-3xl bg-gradient-to-br from-purple-950 to-slate-900 border border-purple-800/50 p-6 sm:p-8 text-white space-y-4">
+          <h3 class="text-xl font-bold font-amiri text-purple-200">٢. تدبر آيتين عظيمتين فاصلتين في كتاب الله</h3>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="p-4 rounded-2xl bg-purple-900/40 border border-purple-700/50 space-y-2">
+              <h4 class="font-bold text-amber-300 text-sm">الآية الأولى: حكم المازح</h4>
+              <p class="font-amiri text-sm leading-relaxed">﴿لَا تَعْتَذِرُوا قَدْ كَفَرْتُم بَعْدَ إِيمَانِكُمْ﴾</p>
+              <p class="text-xs text-purple-100 leading-relaxed">دلت على كفر من تعمد التكلم بكلمة الكفر ولو كان مازحاً أو لاعباً، وأنه لا يُعذر بذلك.</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-purple-900/40 border border-purple-700/50 space-y-2">
+              <h4 class="font-bold text-emerald-300 text-sm">الآية الثانية: عذر الإكراه</h4>
+              <p class="font-amiri text-sm leading-relaxed">﴿إِلَّا مَنْ أُكْرِهَ وَقَلْبُهُ مُطْمَئِنٌّ بِالْإِيمَانِ﴾</p>
+              <p class="text-xs text-purple-100 leading-relaxed">لم يعذر الله تعالى أحداً تعمّد التكلم بكلمة الردة لدنيا أو مداراة إلا المكره الملجأ مع طمأنينة قلبه بالإيمان.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ==================== TAB 7: QUIZ (FLASHCARDS + OBJECTIVE EXAM) ==================== -->
+    <section id="tab-quiz" class="tab-content hidden space-y-6 animate-fadeIn">
+      
+      <!-- شريط التحويل بين نمطي الاختبار (المساران) -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4 no-print">
+        <div>
+          <h2 class="text-2xl font-black font-amiri text-purple-900 dark:text-purple-300">سادساً: الاختبار الذاتي وقياس الاستيعاب</h2>
+          <p class="text-xs sm:text-sm text-slate-500">اختر المسار الأنسب لك لاختبار ضبطك وفهمك لمسائل المتن</p>
+        </div>
+        <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold">
+          <button onclick="setQuizMode('cards')" id="btn-quiz-mode-cards" class="px-3.5 py-1.5 rounded-xl bg-purple-600 text-white shadow-sm transition">
+            🃏 بطاقات الاستحضار الذهني
+          </button>
+          <button onclick="setQuizMode('mcq')" id="btn-quiz-mode-mcq" class="px-3.5 py-1.5 rounded-xl text-slate-600 dark:text-slate-300 transition">
+            📝 الاختبار الموضوعي (خيارات)
+          </button>
         </div>
       </div>
 
-      <!-- Mode 2: MCQ Test -->
-      <div id="quiz-mode-mcq-view" class="hidden max-w-3xl mx-auto space-y-6">
+      <!-- ==================== المسار الأول: بطاقات الاستحضار الذهني ==================== -->
+      <div id="quiz-mode-cards-view" class="space-y-6">
+        <div class="p-4 rounded-2xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 text-xs text-purple-900 dark:text-purple-300 flex items-center justify-between gap-3">
+          <span>💡 <strong>طريقة الاستحضار الذهني:</strong> اقرأ الشبهة واستحضر جوابها في ذهنك أولاً، ثم اضغط «إظهار الجواب» وقيم نفسك بنزاهة.</span>
+          <button onclick="pickRandomQuizCard()" class="px-3 py-1 rounded-xl bg-purple-600 text-white font-bold text-xs hover:bg-purple-700 transition flex-shrink-0">سؤال عشوائي 🎲</button>
+        </div>
+
+        <!-- بطاقة الاختبار الذهني الفعالة -->
+        <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-md space-y-6">
+          <div class="flex items-center justify-between text-xs text-slate-400">
+            <span id="quiz-card-badge" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold">شبهة رقم (١)</span>
+            <span id="quiz-card-counter">الشبهة 1 من 13</span>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="text-xs font-bold text-amber-600 dark:text-amber-400">الشبهة المعروضة:</h3>
+            <p id="quiz-card-question" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-relaxed">
+              نشهد أنه لا يخلق ولا يرزق إلا الله، لكني مذنب والصالحون لهم جاه فأطلب من الله بهم.
+            </p>
+          </div>
+
+          <!-- زر إظهار الجواب -->
+          <div id="quiz-reveal-btn-container" class="text-center py-4">
+            <button onclick="revealQuizCardAnswer()" class="px-6 py-3 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-black text-sm shadow-md transition transform active:scale-95 flex items-center justify-center gap-2 mx-auto">
+              <span>👁️ إظهار الجواب ومقارنته</span>
+            </button>
+          </div>
+
+          <!-- خانة الجواب المخفية -->
+          <div id="quiz-card-answer-box" class="hidden space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800 animate-fadeIn">
+            <h4 class="text-xs font-bold text-emerald-600 dark:text-emerald-400">الجواب السديد المحكم:</h4>
+            <p id="quiz-card-answer-text" class="text-sm sm:text-base leading-loose text-slate-700 dark:text-slate-300 bg-emerald-50/50 dark:bg-emerald-950/20 p-4 rounded-2xl border border-emerald-200 dark:border-emerald-800/50">
+              الذين قاتلهم رسول الله ﷺ كانوا مقرّين بتوحيد الربوبية، وإنما كان كفرهم بسبب اتخاذهم الوسائط طالبين الشفاعة.
+            </p>
+
+            <div class="text-center space-y-2 pt-2">
+              <p class="text-xs text-slate-500 font-bold">كيف كان استحضارك الذهني للجواب؟</p>
+              <div class="flex items-center justify-center gap-3">
+                <button onclick="recordSelfAssessment(true)" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition flex items-center gap-1.5">
+                  <span>✅ أصبتُ الجواب (إتقان)</span>
+                </button>
+                <button onclick="recordSelfAssessment(false)" class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm transition flex items-center gap-1.5">
+                  <span>⚠️ أخطأتُ (ترحيل للمتعثرات)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== المسار الثاني: الاختبار الموضوعي التحريري ==================== -->
+      <div id="quiz-mode-mcq-view" class="hidden space-y-6">
         
-        <div id="mcq-active-box" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-md">
-          <div class="flex justify-between items-center mb-4 text-xs font-bold text-slate-500">
-            <span id="mcq-topic-badge" class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded">الموضوع</span>
-            <span id="mcq-question-tracker">1 / 10</span>
-          </div>
-          <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mb-6 overflow-hidden">
-            <div id="mcq-progress-bar" class="bg-purple-600 h-full w-0 transition-all duration-300"></div>
-          </div>
+        <!-- صندوق السؤال الفعال -->
+        <div id="mcq-active-box" class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-md space-y-6">
           
-          <h3 id="mcq-question-text" class="text-lg sm:text-xl font-bold leading-loose mb-6 text-slate-900 dark:text-white">...</h3>
-          <div id="mcq-options-container" class="space-y-3 mb-6"></div>
-          
-          <div class="flex justify-between items-center pt-5 border-t border-slate-100 dark:border-slate-800">
-            <button id="mcq-btn-prev" onclick="navigateObjectiveQuestion(-1)" class="px-5 py-2.5 rounded-xl text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-50 transition">السابق</button>
-            <button id="mcq-btn-next" onclick="navigateObjectiveQuestion(1)" class="px-5 py-2.5 rounded-xl text-sm font-bold bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300 shadow-sm transition">التالي</button>
-            <button id="mcq-btn-finish" onclick="submitObjectiveExam()" class="hidden px-6 py-2.5 rounded-xl text-sm font-bold bg-emerald-600 text-white shadow-md hover:bg-emerald-700 transition">إنهاء وتصحيح الاختبار</button>
+          <!-- الترويسة ومؤشر التقدم -->
+          <div class="flex items-center justify-between text-xs text-slate-400">
+            <span id="mcq-progress-text" class="font-bold text-purple-600 dark:text-purple-400">السؤال 1 من 10</span>
+            <span class="text-[11px]">اختبار موضوعي شامل للمتن</span>
+          </div>
+
+          <!-- شريط تقدم النسبة -->
+          <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
+            <div id="mcq-progress-bar" class="bg-purple-600 h-2 rounded-full transition-all duration-300" style="width: 10%;"></div>
+          </div>
+
+          <!-- نص السؤال -->
+          <div class="space-y-1">
+            <h3 class="text-xs font-bold text-purple-600 dark:text-purple-400">سؤال الاختبار:</h3>
+            <p id="mcq-question-text" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-relaxed">
+              ما العلة الشرعية التي استحل بها النبي ﷺ دماء مشركي العرب رغم إقرارهم بأن الله هو الخالق الرازق؟
+            </p>
+          </div>
+
+          <!-- الخيارات الأربعة المتوازنة -->
+          <div id="mcq-options-container" class="space-y-2.5">
+            <!-- تُبنى ديناميكياً بالجافاسكربت -->
+          </div>
+
+          <!-- أزرار التنقل بين الأسئلة -->
+          <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800 text-xs font-bold">
+            <button onclick="prevMcqQuestion()" id="mcq-prev-btn" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-40 transition">
+              ➡️ السابق
+            </button>
+            <div class="flex items-center gap-2">
+              <button onclick="nextMcqQuestion()" id="mcq-next-btn" class="px-5 py-2 rounded-xl bg-purple-600 text-white shadow-sm hover:bg-purple-700 transition">
+                التالي ⬅️
+              </button>
+              <button onclick="finishObjectiveExam()" id="mcq-finish-btn" class="hidden px-5 py-2 rounded-xl bg-emerald-600 text-white shadow-sm hover:bg-emerald-700 transition">
+                إنهاء الاختبار ورصد النتيجة ✅
+              </button>
+            </div>
           </div>
         </div>
 
+        <!-- لوحة النتيجة النهائية والتقرير والشهادة -->
         <div id="mcq-result-dashboard" class="hidden space-y-6 animate-fadeIn">
-          <div class="text-center p-8 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-md">
-            <h3 class="text-xl font-bold mb-2">النتيجة النهائية</h3>
+          <div class="text-center p-6 sm:p-8 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-md">
+            
+            <!-- رأس التقرير المخصص للطباعة فقط -->
+            <div class="hidden print-only pb-5 mb-5 border-b-2 border-slate-200 text-center space-y-1">
+              <h2 class="text-2xl font-black text-slate-900">تقرير نتيجة اختبار «كشف الشبهات» الموضوعي</h2>
+              <p class="text-sm text-slate-600">منظومة تقريب واستيعاب رسالة الشيخ محمد بن عبد الوهاب رحمه الله</p>
+              <div id="print-date-display" class="text-xs text-slate-500 pt-1"></div>
+            </div>
+
+            <h3 class="text-xl font-bold mb-2 no-print">النتيجة النهائية للاختبار</h3>
+
+            <!-- خانة كتابة اسم الدارس (اختيارية وتظهر في الطباعة) -->
+            <div class="max-w-md mx-auto my-4 text-center">
+              <label for="student-name-input" class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 no-print">اسم الدارس / المختبَر (اختياري لتضمينه بالتقرير المطبوع):</label>
+              <input type="text" id="student-name-input" oninput="updateStudentNameDisplay(this.value)" placeholder="اكتب اسمك الكريم هنا..." class="w-full text-center px-4 py-2.5 rounded-xl text-sm border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none transition shadow-sm no-print">
+              <div id="student-name-print-display" class="hidden text-xl font-black text-emerald-800 dark:text-emerald-300 py-2 border-b border-dashed border-slate-300 dark:border-slate-700 mb-2"></div>
+            </div>
+
             <div id="mcq-result-percentage" class="text-6xl font-black text-purple-600 dark:text-purple-400 mb-3">0%</div>
             <div id="mcq-result-grade" class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">...</div>
             <p id="mcq-result-evaluation" class="text-sm sm:text-base text-slate-500 max-w-md mx-auto leading-relaxed">...</p>
             
-            <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+            <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center no-print">
+              <button onclick="printExamReport()" class="px-5 py-3 rounded-xl bg-purple-600 text-white font-bold text-sm hover:bg-purple-700 transition shadow-md flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                </svg>
+                <span>🖨️ طباعة تقرير النتيجة</span>
+              </button>
               <button onclick="transferAllExamMissedToReviewBox()" class="px-5 py-3 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 font-bold text-sm hover:bg-amber-100 transition shadow-sm">⚠️ ترحيل الأخطاء لصندوق المتعثرات</button>
               <button onclick="resetObjectiveExam()" class="px-5 py-3 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm dark:bg-slate-800 dark:text-slate-300 transition shadow-sm">🔄 إعادة الاختبار مجدداً</button>
             </div>
           </div>
           
           <h4 class="font-bold text-lg px-2 text-emerald-800 dark:text-emerald-400">التصحيح والبيان التفصيلي:</h4>
-          <div id="mcq-detailed-breakdown-list" class="space-y-5"></div>
+          <div id="mcq-detailed-breakdown-list" class="space-y-4"></div>
         </div>
       </div>
 
     </section>
 
-    <!-- ==================== TAB 7: REVIEW BOX ==================== -->
-    <section id="tab-review" class="tab-content hidden space-y-6">
-      <div class="flex flex-col sm:flex-row justify-between gap-4 border-r-4 border-amber-600 pr-4">
+    <!-- ==================== TAB 8: REVIEW BOX ==================== -->
+    <section id="tab-review" class="tab-content hidden space-y-6 animate-fadeIn">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
         <div>
-          <h2 class="text-xl sm:text-2xl font-bold">⚠️ صندوق مراجعة الشبهات والأسئلة المتعثرة</h2>
-          <p class="text-sm text-slate-500 mt-1">الأسئلة التي تم ترحيلها من الاختبارات لغرض المراجعة والتركيز</p>
+          <h2 class="text-2xl font-black font-amiri text-amber-900 dark:text-amber-300">سابعاً: صندوق مراجعة المتعثرات</h2>
+          <p class="text-xs sm:text-sm text-slate-500">المسائل والشبهات التي تحتاج منك إلى إعادة ضبط وتثبيت</p>
         </div>
-        <button onclick="clearAllMissed()" class="px-4 py-2 rounded-xl text-xs font-bold text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 shadow-sm hover:bg-red-100 transition">تفريغ الصندوق</button>
+        <button onclick="clearAllMissed()" class="px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400 text-xs font-bold border border-red-200 dark:border-red-900 transition">
+          🗑️ تفريغ الصندوق
+        </button>
       </div>
 
-      <div id="review-empty-state" class="hidden text-center py-16 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-        <div class="text-5xl mb-4">🎉</div>
-        <h3 class="text-xl font-bold mb-2">الصندوق فارغ!</h3>
-        <p class="text-sm text-slate-500">لا توجد أخطاء مسجلة حالياً.. عمل ممتاز.</p>
+      <div id="review-items-container" class="space-y-4">
+        <!-- يتم عرض الأسئلة المتعثرة هنا بالجافاسكربت -->
       </div>
-
-      <div id="review-items-container" class="space-y-5"></div>
     </section>
 
   </main>
+  <!-- نافذة البحث السريع المنبثقة الشاملة -->
+  <div id="search-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-start justify-center p-4 pt-16 sm:pt-24 no-print animate-fadeIn">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+      
+      <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
+        <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input type="text" id="global-search-input" oninput="executeSearch(this.value)" placeholder="ابحث في المتن والشبهات والأدلة (مثال: الشفاعة، النحر، ذات أنواط، مسيلمة)..." class="w-full bg-transparent text-sm sm:text-base text-slate-900 dark:text-white placeholder-slate-400 outline-none">
+        <button onclick="closeSearchModal()" class="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
 
-  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-300 bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 px-5 py-2.5 rounded-2xl shadow-xl text-sm font-bold flex items-center gap-2">
-    <span id="toast-icon">ℹ️</span><span id="toast-message">تمت العملية</span>
+      <div id="search-results-container" class="p-4 overflow-y-auto space-y-3 flex-grow">
+        <div class="text-center py-10 text-slate-400 text-sm">
+          اكتب كلمة أو عبارة للبحث الفوري في كافة أقسام المنظومة
+        </div>
+      </div>
+
+      <div class="p-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 flex justify-between items-center px-4">
+        <span>اضغط على النتيجة للانتقال الفوري إليها</span>
+        <button onclick="closeSearchModal()" class="text-emerald-600 dark:text-emerald-400 font-bold">إغلاق (Esc)</button>
+      </div>
+    </div>
   </div>
 
+  <!-- رسالة الإشعار المنبثقة (Toast Notification) -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-300 bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 px-5 py-2.5 rounded-2xl shadow-xl text-sm font-bold flex items-center gap-2">
+    <span id="toast-icon">✨</span>
+    <span id="toast-message">تم الإجراء بنجاح</span>
+  </div>
+
+  <!-- التذييل الأنيق -->
+  <footer class="mt-12 py-6 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400 dark:text-slate-500 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm no-print">
+    <p>المُعين في ضبط رسالة «كشف الشبهات» للإمام محمد بن عبد الوهاب رحمه الله • منظومة تفاعلية تعليمية</p>
+  </footer>
   <!-- JavaScript Application Logic -->
   <script>
-    // --- Data (Shubuhat) ---
+    // --- Data: الشبهات الـ 13 بدقة علمية محررة ---
     const shubuhatData = [
-      { id: 1, category: 'tawassul', shubha: 'نشهد أنه لا يخلق ولا يرزق إلا الله، لكني مذنب والصالحون لهم جاه فأطلب من الله بهم.', jawab: 'الذين قاتلهم رسول الله ﷺ كانوا مقرّين بتوحيد الربوبية، وإنما كان كفرهم بسبب اتخاذهم الوسائط طالبين الشفاعة: ﴿مَا نَعْبُدُهُمْ إِلَّا لِيُقَرِّبُونَا إِلَى اللَّهِ زُلْفَىٰ﴾، فطلب الجاه من الموتى هو عين فعل المشركين.' },
-      { id: 2, category: 'tawassul', shubha: 'هذه الآيات نزلت فيمن يعبد الأصنام، فكيف تجعلون الصالحين والأنبياء أصناماً؟', jawab: 'من الكفار من كان يدعو الأنبياء والصالحين والملائكة، قال تعالى: ﴿أُولَٰئِكَ الَّذِينَ يَدْعُونَ يَبْتَغُونَ إِلَىٰ رَبِّهِمُ الْوَسِيلَةَ أَيُّهُمْ أَقْرَبُ﴾، فالله تعالى كفّر الجميع وقاتلهم النبي ﷺ ولم يفرق بين من عبد حجراً أو نبياً.' },
-      { id: 3, category: 'tawassul', shubha: 'الكفار يريدون منهم النفع، وأنا لا أريد إلا من الله، وإنما أقصد الصالحين أرجو شفاعتهم.', jawab: 'هذا قول الكفار بعينه! فقد صرح القرآن بأنهم ما اعتقدوا أن الأصنام تنفع بذاتها بل قالوا: ﴿وَيَقُولُونَ هَٰؤُلَاءِ شُفَعَاؤُنَا عِندَ اللَّهِ﴾، فقصدهم للشفاعة هو الشرك الذي قوتلوا عليه.' },
-      { id: 4, category: 'tawassul', shubha: 'الالتجاء إلى الصالحين ودعاؤهم ليس بعبادة حتى تسموه شركاً!', jawab: 'الله فرض عليك إخلاص العبادة له، وبيّن أن الدعاء هو العبادة: ﴿ادْعُوا رَبَّكُمْ تَضَرُّعًا وَخُفْيَةً﴾، وكذا النذر؛ فإذا كانت عبادات فصرفها لغير الله شرك أكبر.' },
-      { id: 5, category: 'tawassul', shubha: 'أتنكرون شفاعة رسول الله ﷺ وتتبرأون منها؟', jawab: 'لا ننكرها، ونرجوها، لكن الشفاعة كلها لله: ﴿قُل لِّلَّهِ الشَّفَاعَةُ جَمِيعًا﴾ ولا تقع إلا بإذنه، فاطلبها من مالكها وقل: «اللهم شفّعه فيّ»، ولا تطلبها من غير الله.' },
-      { id: 6, category: 'tawassul', shubha: 'النبي ﷺ أُعطي الشفاعة، وأنا أطلبه مما أعطاه الله!', jawab: 'الله أعطاه الشفاعة ونهاك عن دعاء غيره: ﴿فَلَا تَدْعُوا مَعَ اللَّهِ أَحَدًا﴾. والشفاعة أُعطيها غير النبي كالملائكة والأفراط؛ فإن جاز دعاؤه لزمك دعاء هؤلاء وهو عين الشرك، وإلا بطل قولك.' },
-      { id: 7, category: 'tawassul', shubha: 'أنا لا أشرك بالله شيئاً، والالتجاء للأولياء ليس بشرك.', jawab: 'إذا أقررت أن الله حرّم الشرك أشد من الزنا ﴿إِنَّ اللَّهَ لَا يَغْفِرُ أَن يُشْرَكَ بِهِ﴾؛ فما هو الشرك الذي حرّمه؟ إذا كنت تجهله فكيف تبرئ نفسك منه؟ إنه عين ما تفعله بالصالحين.' },
-      { id: 8, category: 'tawassul', shubha: 'الشرك عبادة الأصنام، ونحن لا نعبد الأصنام!', jawab: 'ما معنى عبادة الأصنام؟ أتظن العرب تعتقد أن الخشب يرزق؟ القرآن يكذب ذلك! بل كانوا يقصدون الحجر أو القبر ليقربهم إلى الله؛ وهذا فعلكم وتغيير الاسم لا يغير الحقيقة.' },
-      { id: 9, category: 'takfir', shubha: 'الذين نزلت فيهم الآيات يكذبون بالرسول والقرآن، أما نحن فنشهد الشهادتين ونصلي، فكيف نكفّر؟', jawab: 'أجمع العلماء أن من صدق الرسول في شيء وكذبه في شيء أو جحد فريضة معلومة من الدين بالضرورة فهو كافر. وبنو حنيفة قاتلهم الصحابة وهم يصلون ويشهدون لما جعلوا مسيلمة نبياً.' },
-      { id: 10, category: 'takfir', shubha: 'قول الصحابة: «اجعل لنا ذات أنواط»، ولم يكفروا!', jawab: 'الصحابة لم يفعلوا، ولو اتخذوها لكفروا، ولما نهاهم النبي ﷺ تابوا في الحال. القصة تدل على أن المسلم قد تخفى عليه بعض مسائل الشرك، وأن الجاهل إذا نُبه فتاب فوراً لم يكفر.' },
-      { id: 11, category: 'takfir', shubha: 'إنكار النبي ﷺ قتل من قال «لا إله إلا الله»، وحديث «أمرت أن أقاتل الناس حتى يقولوا لا إله إلا الله».', jawab: 'من أظهر التوحيد وجب الكف عنه حتى يتبين منه ناقض ﴿فَتَبَيَّنُوا﴾؛ ولو كانت الكلمة تمنع القتال مطلقاً لما قُوتل اليهود وبنو حنيفة، ولا حُرِّق الغلاة، ولا قُوتل مانعو الزكاة، ولا قُوتل الخوارج.' },
-      { id: 12, category: 'tawassul', shubha: 'استغاثة الخلائق بالأنبياء يوم القيامة يدل أن الاستغاثة بغير الله جائزة.', jawab: 'الاستغاثة بالمخلوق الحي الحاضر فيما يقدر عليه لا ننكرها. والناس يسألون الأنبياء أحياءً حاضرين ليطلبوا من الله، كطلبك الدعاء من حي: «ادعُ الله لي»، بخلاف الاستغاثة بقبر ميت غائب فيما لا يقدر عليه إلا الله.' },
-      { id: 13, category: 'tawassul', shubha: 'استغاثة إبراهيم بجبريل لما ألقي في النار، فعرض عليه المساعدة!', jawab: 'جبريل مَلَك حي حاضر عرض معونة يقدر عليها كغني يعرض قرضاً على محتاج. والقصة حجة عليكم لأن إبراهيم كمل توحيده واعتمد على الله وقال: «أما إليك فلا! حسبي الله».' }
+      { 
+        id: 1, 
+        category: 'tawassul', 
+        shubha: 'نحن لا نشرك بالله؛ نشهد أنه لا يخلق ولا يرزق ولا ينفع ولا يضر إلا الله، لكني مذنب والصالحون لهم جاه فأطلب من الله بهم.', 
+        jawab: 'الذين قاتلهم رسول الله ﷺ كانوا مقرّين بتوحيد الربوبية، وإنما كان كفرهم بسبب اتخاذهم الوسائط طالبين الشفاعة: ﴿مَا نَعْبُدُهُمْ إِلَّا لِيُقَرِّبُونَا إِلَى اللَّهِ زُلْفَىٰ﴾، فطلب الجاه من الموتى هو عين فعل المشركين.' 
+      },
+      { 
+        id: 2, 
+        category: 'asnam', 
+        shubha: 'هذه الآيات نزلت فيمن يعبد الأصنام، فكيف تجعلون الصالحين والأنبياء أصناماً؟', 
+        jawab: 'من الكفار من كان يدعو الأنبياء والصالحين والملائكة، قال تعالى: ﴿أُولَٰئِكَ الَّذِينَ يَدْعُونَ يَبْتَغُونَ إِلَىٰ رَبِّهِمُ الْوَسِيلَةَ أَيُّهُمْ أَقْرَبُ﴾، فالله تعالى كفّر الجميع وقاتلهم النبي ﷺ ولم يفرق بين من عبد حجراً أو نبياً.' 
+      },
+      { 
+        id: 3, 
+        category: 'tawassul', 
+        shubha: 'الكفار يريدون منهم النفع، وأنا أشهد أن الله هو النافع الضار، لا أريد إلا منه، وإنما أقصد الصالحين أرجو شفاعتهم.', 
+        jawab: 'هذا قول الكفار بعينه! فقد صرح القرآن بأنهم ما اعتقدوا أن الأصنام تنفع بذاتها بل قالوا: ﴿وَيَقُولُونَ هَٰؤُلَاءِ شُفَعَاؤُنَا عِندَ اللَّهِ﴾، فقصدهم للشفاعة هو الشرك الذي قوتلوا عليه.' 
+      },
+      { 
+        id: 4, 
+        category: 'asnam', 
+        shubha: 'أنا لا أعبد إلا الله، والالتجاء إلى الصالحين ودعاؤهم ليس بعبادة حتى تسموه شركاً!', 
+        jawab: 'الله فرض عليك إخلاص العبادة له، وبيّن أن الدعاء هو العبادة: ﴿ادْعُوا رَبَّكُمْ تَضَرُّعًا وَخُفْيَةً﴾، وكذا النحر والنذر؛ فإذا كانت عبادات فصرفها لغير الله شرك أكبر.' 
+      },
+      { 
+        id: 5, 
+        category: 'tawassul', 
+        shubha: 'أتنكرون شفاعة رسول الله ﷺ وتتبرأون منها؟', 
+        jawab: 'لا ننكرها، بل هو الشافع المشفع ونرجو شفاعته، لكن الشفاعة كلها لله: ﴿قُل لِّلَّهِ الشَّفَاعَةُ جَمِيعًا﴾ ولا تقع إلا بإذنه ورضاه، فاطلبها من مالكها وقل: «اللهم لا تحرمني شفاعته» ولا تطلبها من الميت.' 
+      },
+      { 
+        id: 6, 
+        category: 'tawassul', 
+        shubha: 'النبي ﷺ أُعطي الشفاعة، وأنا أطلبه مما أعطاه الله.', 
+        jawab: 'الله أعطاه الشفاعة ونهاك عن دعائه: ﴿فَلَا تَدْعُوا مَعَ اللَّهِ أَحَدًا﴾، وأُعطيها غيره أيضاً كالأنبياء والملائكة والأفراط، فإن طلبتها منهم رجعت إلى عبادة الصالحين وإلا بطل قولك.' 
+      },
+      { 
+        id: 7, 
+        category: 'tawassul', 
+        shubha: 'أنا لا أشرك بالله شيئاً، والالتجاء إلى الصالحين ليس بشرك.', 
+        jawab: 'إذا أقررت أن الله حرم الشرك أعظم من تحريم الزنا وأنه لا يغفره، فما هو الشرك الذي حرمه الله؟ إنه لا يعرفه، فكيف يبرئ نفسه من أمر يجهل حقيقته وحدّه؟!' 
+      },
+      { 
+        id: 8, 
+        category: 'asnam', 
+        shubha: 'الشرك عبادة الأصنام، ونحن لا نعبد الأصنام والأحجار.', 
+        jawab: 'ما معنى عبادة الأصنام؟ أتظنهم يعتقدون أن الخشب يخلق ويرزق؟ هذا يكذبه القرآن، وإنما هي قصد القبر أو البنية بالدعاء والذبح ليقربهم إلى الله، وتغيير الاسم لا يغير حقيقة الشرك.' 
+      },
+      { 
+        id: 9, 
+        category: 'takfeer', 
+        shubha: 'الذين نزلت فيهم الآيات لا يشهدون الشهادتين ويكذبون بالرسول، ونحن نصلي ونصوم ونشهد فكيف تجعلوننا مثلهم؟', 
+        jawab: 'أجمع العلماء أن من صدق الرسول في شيء وكذبه في شيء أو نقض التوحيد فهو كافر؛ ومن شواهد ذلك: إجماع الصحابة على قتال بني حنيفة مع صلاتهم وأذانهم، وتحريق علي للغلاة، وإجماع العلماء على كفر بني عبيد القداح مع إظهارهم الشرائع، وما سطره الفقهاء في باب حكم المرتد من أن المسلم يكفر بكلمة ينطق بها ولو مازحاً.' 
+      },
+      { 
+        id: 10, 
+        category: 'takfeer', 
+        shubha: 'قول بعض الصحابة: «اجعل لنا ذات أنواط»، وقول بني إسرائيل: «اجعل لنا إلها»، ومع ذلك لم يكفروا!', 
+        jawab: 'الصحابة رضي الله عنهم طلبوا ذلك مضاهاةً لجهلهم بحقيقته، ولم يفعلوا الشرك بالفعل بل انقادوا لنهي النبي ﷺ وتابوا فوراً؛ وفيها أن المسلم قد تخفى عليه بعض دقائق الشرك ومفاسد الذرائع، وأن من قال قولاً محرماً جاهلاً ثم نُبّه فتاب في الحال لم يُؤاخذ.' 
+      },
+      { 
+        id: 11, 
+        category: 'takfeer', 
+        shubha: 'إنكار النبي ﷺ على أسامة قتل من قال «لا إله إلا الله»، وحديث «أُمرت أن أقاتل الناس حتى يقولوها».', 
+        jawab: 'من أظهر التوحيد وجب الكف عنه حتى يتبين منه ما يناقضه ﴿فَتَبَيَّنُوا﴾؛ ولو كانت الكلمة تمنع القتال مطلقاً عند وجود الناقض؛ لما قاتل الصحابة بني حنيفة، ولا حرّق علي الغلاة، ولا قُوتل مانعو الزكاة والخوارج مع نطقهم بها وكثرة عبادتهم.' 
+      },
+      { 
+        id: 12, 
+        category: 'istighatha', 
+        shubha: 'استغاثة الناس يوم القيامة بآدم ثم نوح ثم بمحمد ﷺ، فالاستغاثة بغير الله ليست بشرك!', 
+        jawab: 'الاستغاثة بالمخلوق الحي الحاضر فيما يقدر عليه لا ننكرها ﴿فَاسْتَغَاثَهُ الَّذِي مِن شِيعَتِهِ﴾، وإنما ننكر استغاثة العبادة عند قبور الأولياء وفي غيبتهم فيما لا يقدر عليه إلا الله؛ وهم يوم القيامة يسألونهم أن يدعوا الله، كما تطلب من رجل صالح حي أن يدعو لك.' 
+      },
+      { 
+        id: 13, 
+        category: 'istighatha', 
+        shubha: 'قصة إبراهيم عليه السلام لما أُلقي في النار فعَرَض له جبريل المساعدة، فاستدلوا بها على جواز الاستغاثة بالمخلوق.', 
+        jawab: 'هذه من جنس السابقة؛ فجبريل عرض معونة يقدر عليها كغني يعرض على محتاج قرضاً، وإبراهيم امتنع توكلاً على الله، فالقصة حجة عليهم لا لهم.' 
+      }
     ];
 
-    // --- Data (MCQ Test with Refined Distractors and Balanced Lengths) ---
+    // --- Data: أسئلة الاختبار الموضوعي الـ 10 المحررة والمتوازنة ---
     const objectiveQuestionsData = [
       {
         id: 1,
         shubhaRefId: 0,
-        topic: 'التوحيد والربوبية',
-        question: 'ما العلة الشرعية التي استحل بها النبي ﷺ دماء مشركي العرب رغم إقرارهم بأن الله هو الخالق الرازق؟',
+        question: 'ما العلة الشرعية التي استحل بها النبي ﷺ دماء مشركي العرب وأموالهم رغم إقرارهم بأن الله هو الخالق الرازق؟',
         options: [
-          { key: 'A', text: 'امتناعهم عن الخضوع لأحكام الشريعة في المعاملات والدماء.' },
-          { key: 'B', text: 'إنكارهم قدرة الله التامة على إحياء الموتى والبعث بعد الفناء.' },
+          { key: 'A', text: 'إنكارهم قدرة الله التامة على إحياء الموتى والبعث بعد الفناء.' },
+          { key: 'B', text: 'امتناعهم عن الخضوع لأحكام الشريعة في المعاملات والدماء.' },
           { key: 'C', text: 'صرفهم العبادة لوسائط تقربهم إلى الله وتشفع لهم عنده.' },
           { key: 'D', text: 'اعتقادهم استقلال الأصنام بإيجاد المنافع وجلب الأرزاق في الأرض.' }
         ],
         correctKey: 'C',
-        explanation: 'إقرار المشركين بالربوبية لم يدخلهم في الإسلام لأنهم اتخذوا وسائط وشفعاء صرفوا لهم الدعاء والعبادة ليقربوهم إلى الله زلفى.'
+        explanation: 'العلة المحكمة هي صرفهم العبادة لوسائط، فقد صرح القرآن بإقرارهم بالربوبية وأنهم قالوا: ﴿مَا نَعْبُدُهُمْ إِلَّا لِيُقَرِّبُونَا إِلَى اللَّهِ زُلْفَىٰ﴾.'
       },
       {
         id: 2,
         shubhaRefId: 2,
-        topic: 'شبهة الأصنام والصالحين',
-        question: 'كيف نرد على من زعم أن آيات الشرك خُصت بمن قصد الأحجار والأشجار دون من توسل بجاه الصالحين؟',
+        question: 'كيف نرد على من زعم أن آيات الشرك خُصت بمن قصد الأحجار والأشجار دون من توسل بالأنبياء والصالحين؟',
         options: [
-          { key: 'A', text: 'بأن الأولين لم ينصبوا أحجاراً أصلاً، بل كانت تماثيلهم كلها قبوراً لأولياء.' },
-          { key: 'B', text: 'بأن لفظ الصنم في لسان العرب يختص شرعاً بكل صاحب فضيلة يُرجى جاهه.' },
-          { key: 'C', text: 'بأن دعاء الصالحين إنما حُرِّم سداً للذريعة خوفاً من عبادتهم كالأصنام لاحقاً.' },
+          { key: 'A', text: 'بأن لفظ الصنم في لسان العرب يختص شرعاً بكل صاحب فضيلة يُرجى جاهه.' },
+          { key: 'B', text: 'بأن دعاء الصالحين إنما حُرِّم سداً للذريعة خوفاً من عبادتهم كالأصنام لاحقاً.' },
+          { key: 'C', text: 'بأن الأولين لم ينصبوا أحجاراً أصلاً، بل كانت تماثيلهم كلها قبوراً لأولياء.' },
           { key: 'D', text: 'بأن القرآن أثبت أن شركهم شمل دعاء الملائكة وعيسى والصالحين وسوّى بينهم.' }
         ],
         correctKey: 'D',
-        explanation: 'القرآن صرح بأن من المشركين من كان يدعو الأنبياء والصالحين والملائكة، فكفّرهم الله جميعاً ولم يفرق النبي ﷺ بين من عبد حجراً أو نبياً.'
+        explanation: 'كفّر الله تعالى الجميع في القرآن: ﴿أُولَٰئِكَ الَّذِينَ يَدْعُونَ يَبْتَغُونَ إِلَىٰ رَبِّهِمُ الْوَسِيلَةَ﴾، وقاتلهم النبي ﷺ ولم يفرق بين من عبد حجراً أو ملكاً أو نبياً.'
       },
       {
         id: 3,
         shubhaRefId: 6,
-        topic: 'شفاعة النبي ﷺ',
         question: 'بمَ يُجاب من قال: «النبي ﷺ أُعطي مقام الشفاعة، وأنا أسأله مما خصّه الله به وأعطاه»؟',
         options: [
-          { key: 'A', text: 'بأن الشفاعة أُعطيت أيضاً للملائكة والأفراط فطلبها منهم عبادة محرمة بالإجماع.' },
+          { key: 'A', text: 'بأن الشفاعة أُعطيت أيضاً لغيره فطلبها من الميت دعاء لغير الله منهي عنه.' },
           { key: 'B', text: 'بأن النبي ﷺ لا يملك شفاعة أحد في الدنيا لأنها تأجلت بالكلية إلى الدار الآخرة.' },
           { key: 'C', text: 'بأن الله حصر الشفاعة في الأنبياء وحدهم دون سائر الخلق فلا تُطلب إلا بالصلاة.' },
           { key: 'D', text: 'بأن طلب الشفاعة جائز لمن زار قبره الشريف دون من كان نائياً عنه في البلدان.' }
         ],
         correctKey: 'A',
-        explanation: 'الله تعالى أعطاه الشفاعة ونهاك عن دعاء غيره، والشفاعة أُعطيت لغيره كالملائكة والأفراط؛ فلو جاز دعاء النبي لأجل إعطائها لجاز دعاء غيره وهو باطل بإجماع.'
+        explanation: 'الشفاعة ملك لله وحده ﴿قُل لِّلَّهِ الشَّفَاعَةُ جَمِيعًا﴾، والله الذي أعطاه الشفاعة نهاك عن دعائه: ﴿فَلَا تَدْعُوا مَعَ اللَّهِ أَحَدًا﴾، وأُعطيها الملائكة والأفراط أيضاً.'
       },
       {
         id: 4,
         shubhaRefId: 0,
-        topic: 'الجواب المجمل',
-        question: 'ما هو المسلك المعتمد في «الجواب المجمل» عند مواجهة صاحب الشبهة كما قرره المصنف؟',
+        question: 'ما هو المسلك المعتمد في «الجواب المجمل» عند مواجهة صاحب الشبهة كما قرره المصنف رحمه الله؟',
         options: [
           { key: 'A', text: 'السكوت المطلق والإعراض عن مجادلة الخصم لأن مناظرته تورث قسوة القلب وزيغه.' },
           { key: 'B', text: 'رد المتشابه إلى المحكم الثابت بيقين أن كلام الله ورسوله لا يتناقض ولا يختلف.' },
@@ -455,251 +754,355 @@
           { key: 'D', text: 'الطعن في أسانيد الروايات التي يستدل بها الخصم وإثبات ضعف دلالتها اللغوية.' }
         ],
         correctKey: 'B',
-        explanation: 'الجواب المجمل يقوم على رد المتشابه الخفي إلى المحكم الجلي، والقطع بأن كلام الله ورسوله ﷺ حق مؤتلف لا يتناقض.'
+        explanation: 'الجواب المجمل مبني على رد المتشابه للمحكم لقوله تعالى: ﴿فَأَمَّا الَّذِينَ فِي قُلُوبِهِمْ زَيْغٌ فَيَتَّبِعُونَ مَا تَشَابَهَ مِنْهُ﴾، فالمحكم أن النبي ﷺ قاتل من أقر بالربوبية لقصدهم الشفعاء.'
       },
       {
         id: 5,
         shubhaRefId: 9,
-        topic: 'مانعو الزكاة والشهادتان',
-        question: 'ما الدليل التاريخي القطعي على أن النطق بالشهادتين وإقامة الصلاة لا يمنعان من الحكم بالردة عند وجود الناقض؟',
+        question: 'ما الدليل التاريخي والشرعي القطعي على أن التلفظ بالشهادتين وإقامة الصلاة لا يمنعان من الحكم بالردة؟',
         options: [
-          { key: 'A', text: 'أن تارك التوحيد لا تقبل منه شهادة أصلاً في الدنيا وتُعتبر صلاته باطلة لغةً.' },
+          { key: 'A', text: 'كون الشهادتين إنما تعصمان دم ومال من أتى بجميع فرائض الإسلام الظاهرة فقط.' },
           { key: 'B', text: 'اقتصار قتال أبي بكر لمانعي الزكاة على أخذ المال تعزيراً دون الحكم بردتهم.' },
           { key: 'C', text: 'قتال الصحابة لبني حنيفة وحكمهم بردتهم وسبي نسائهم مع كونهم يؤذنون ويصلون.' },
-          { key: 'D', text: 'كون الشهادتين إنما تعصمان دم ومال من أتى بجميع فرائض الإسلام الظاهرة فقط.' }
+          { key: 'D', text: 'أن تارك التوحيد لا تقبل منه شهادة أصلاً في الدنيا وتُعتبر صلاته باطلة لغةً.' }
         ],
         correctKey: 'C',
-        explanation: 'الصحابة رضي الله عنهم أجمعوا على قتال بني حنيفة وحكموا بردتهم وسبي نسائهم مع كونهم يشهدون ويؤذنون ويصلون، لما صدقوا مسيلمة الكذاب.'
+        explanation: 'إجماع الصحابة رضي الله عنهم على قتال بني حنيفة وسبي نسائهم مع أنهم يشهدون أن لا إله إلا الله ويصلون لما أقروا بنبوة مسيلمة الكذاب.'
       },
       {
         id: 6,
         shubhaRefId: 10,
-        topic: 'ذات أنواط',
-        question: 'ما وجه كون قصة طلب الصحابة لـ «ذات أنواط» حجةً تدحض دعوى المخالف لا حجةً له؟',
+        question: 'ما وجه كون واقعة طلب بعض الصحابة لـ «ذات أنواط» حجةً تدحض دعوى المخالف لا حجةً له؟',
         options: [
-          { key: 'A', text: 'أن القصة تدل على أن الجاهل يُعذر في الفعل نفسه ولو استمر عليه بعد البيان.' },
-          { key: 'B', text: 'أن التبرك بالشجر مباح في أصله وإنما نهاهم النبي ﷺ كراهةً للتشبه بالأعاجم.' },
-          { key: 'C', text: 'أن طلب الصحابة كان تبركاً جائزاً ولكن النبي ﷺ شدد عليهم لكونهم حديثي عهد بكفر.' },
-          { key: 'D', text: 'أن الصحابة لما نُبّهوا تابوا فوراً ولم يفعلوا، ولو فعلوا الشرك لحُكم بكفرهم.' }
+          { key: 'A', text: 'أن التبرك بالشجر مباح في أصله وإنما نهاهم النبي ﷺ كراهةً للتشبه بالأعاجم.' },
+          { key: 'B', text: 'أن طلب الصحابة كان تبركاً جائزاً ولكن النبي ﷺ شدد عليهم لكونهم حديثي عهد بكفر.' },
+          { key: 'C', text: 'أن القصة تدل على أن الجاهل يُعذر في الفعل نفسه ولو استمر عليه بعد البيان.' },
+          { key: 'D', text: 'أن الصحابة رضي الله عنهم توقفوا عند نهي النبي ﷺ وتابوا فوراً ولم يفعلوا الشرك.' }
         ],
         correctKey: 'D',
-        explanation: 'الصحابة رضي الله عنهم لم يتخذوا الشجرة ولم يفعلوا ذلك، ولو فعلوه لكفروا، ولما نهاهم النبي ﷺ استغفروا وتابوا في الحال.'
+        explanation: 'الصحابة لم يفعلوا الشرك بل انقادوا لنهي النبي ﷺ وتابوا فوراً؛ وفيها تغليظ النهي عن مشابهة المشركين وأن من قال كلمة جاهلاً فنُبّه فتاب لم يؤاخذ.'
       },
       {
         id: 7,
         shubhaRefId: 11,
-        topic: 'حديث أسامة رضي الله عنه',
-        question: 'كيف يُوجّه استدلال المخالف بإنكار النبي ﷺ قتل من قال «لا إله إلا الله» في قصة أسامة؟',
+        question: 'كيف يُوجّه استدلال المخالف بإنكار النبي ﷺ قتل من قال «لا إله إلا الله» في قصة أسامة رضي الله عنه؟',
         options: [
-          { key: 'A', text: 'الكلمة تعصم ما لم يظهر ناقض، وإلا لما قُوتل الخوارج وبنو حنيفة ومانعو الزكاة.' },
+          { key: 'A', text: 'الكلمة تعصم من أظهرها حتى يتبين ناقضها، وإلا لما قُوتل مانعو الزكاة والخوارج.' },
           { key: 'B', text: 'الحديث منسوخ بآيات السيف التي نزلت في أواخر العهد المدني لقتال المشركين.' },
           { key: 'C', text: 'النهي خاص بمن نطق بالشهادتين في حال السلم دون من قالها تحت ظلال السيوف.' },
-          { key: 'D', text: 'الواجب قبول ظاهر القائل مطلقاً ولا يجوز قتاله ولو أتى بما يناقض الشهادتين صراحة.' }
+          { key: 'D', text: 'الواجب قبول ظاهر القائل مطلقاً ولا يجوز قتاله ولو أتى بما يناقض التوحيد.' }
         ],
         correctKey: 'A',
-        explanation: 'كلمة لا إله إلا الله تعصم الدم والمال ما لم يأتِ قائلها بناقض؛ ولولا ذلك لم يقاتل الصحابة بنو حنيفة ومانعو الزكاة والخوارج مع نطقهم بها.'
+        explanation: 'الواجب الكف عن القائل حتى يتبين منه ما يناقض الكلمة ﴿فَتَبَيَّنُوا﴾، ولو كانت تمنع القتال مطلقاً مع وجود الناقض لما قُوتل مانعو الزكاة ولا الخوارج.'
       },
       {
         id: 8,
         shubhaRefId: 12,
-        topic: 'ضابط الاستغاثة',
-        question: 'ما هو الضابط الدقيق الذي يفصل بين الاستغاثة الجائزة شرعاً والاستغاثة الشركية؟',
+        question: 'ما هو الضابط الدقيق الذي يفصل بين الاستغاثة الجائزة شرعاً والاستغاثة الشركية الممنوعة؟',
         options: [
           { key: 'A', text: 'أن تكون بمخلوق معظّم في الدين سواء أكان حياً حاضراً أم ميتاً في ضريحه.' },
-          { key: 'B', text: 'أن تكون بالمخلوق الحي الحاضر فيما يقدر عليه ضمن الأسباب العادية المعتادة.' },
+          { key: 'B', text: 'أن تكون بالمخلوق الحي الحاضر القادر فيما يدخل تحت قدرته العادية المعتادة.' },
           { key: 'C', text: 'أن يقصد المستغيث التماس البركة دون اعتقاد التأثير الذاتي للمخلوق المعان.' },
           { key: 'D', text: 'أن تقتصر على أوقات الكروب والشدائد الشديدة التي يعجز العبد عن دفعها بمفرده.' }
         ],
         correctKey: 'B',
-        explanation: 'الاستغاثة الجائزة مقيدة بكونها بحي حاضر قادر في حدود الأسباب الطبيعية المعتادة؛ أما الاستغاثة بالميت أو الغائب أو الحي فيما لا يقدر عليه إلا الله فهي شرك أكبر.'
+        explanation: 'الاستغاثة بالمخلوق الحي الحاضر القادر فيما يقدر عليه جائزة ﴿فَاسْتَغَاثَهُ الَّذِي مِن شِيعَتِهِ﴾؛ أما استغاثة الغائب أو الميت أو فيما لا يقدر عليه إلا الله فشرك.'
       },
       {
         id: 9,
         shubhaRefId: 0,
-        topic: 'شرك الأولين والمتأخرين',
         question: 'ما الوجهان اللذان جعلا شرك أهل الجاهلية الأولى أخف من شرك طوائف المتأخرين؟',
         options: [
-          { key: 'A', text: 'إقرار الأولين بتوحيد العبادة وإنكارهم الربوبية، بينما عكس المتأخرون هذا الإقرار تماماً.' },
+          { key: 'A', text: 'إنكار الأولين لتوحيد الربوبية في الجملة، بخلاف المتأخرين الذين يقرون بالربوبية.' },
           { key: 'B', text: 'أن الأولين لم يقصدوا التبرك الحقيقي، بينما جعل المتأخرون الأولياء أرباباً مع الله.' },
           { key: 'C', text: 'إخلاص الأولين في الشدة وقصدهم الصالحين، بخلاف استمرار شرك المتأخرين ودعائهم الفساق.' },
           { key: 'D', text: 'اقتصار الأولين في شركهم على الذبح فقط، بينما زاد المتأخرون عليه بالنذر والركوع.' }
         ],
         correctKey: 'C',
-        explanation: 'الأولون كانوا يخلصون لله في الشدة ويدعون مقربين كالملائكة والأنبياء، بخلاف بعض المتأخرين الذين يستمر شركهم في الرخاء والشدة ويدعون أناساً فيهم الفساق والمجاهيل.'
+        explanation: 'الأولون يخلصون في الشدة ﴿فَإِذَا رَكِبُوا فِي الْفُلْكِ...﴾ ويدعون صالحين أو أحجاراً مطيعة، بينما المتأخرون شركهم دائم ويدعون الفساق والمجاهيل.'
       },
       {
         id: 10,
         shubhaRefId: 0,
-        topic: 'الخاتمة والآيتان',
         question: 'ما المعنى الدقيق المستفاد من الجمع بين قوله تعالى: ﴿لا تعتذروا﴾ وقوله: ﴿إلا من أُكره﴾؟',
         options: [
-          { key: 'A', text: 'اختصاص نفي العذر بالمنافقين في زمن التنزيل، وجريان العذر بالجهل على من بعدهم.' },
-          { key: 'B', text: 'اشتراط انشراح الصدر بالكفر للمؤاخذة باللفظ، فمن لم ينشرح قلبه عُفي عن لسانه.' },
-          { key: 'C', text: 'التفريق بين من كفر طمعاً في جاه أو دنيا وبين من تكلم بالاستهزاء كاذباً أو لاعباً.' },
+          { key: 'A', text: 'اشتراط انشراح الصدر بالكفر للمؤاخذة باللفظ، فمن لم ينشرح قلبه عُفي عن لسانه.' },
+          { key: 'B', text: 'التفريق بين من كفر طمعاً في جاه أو دنيا وبين من تكلم بالاستهزاء كاذباً أو لاعباً.' },
+          { key: 'C', text: 'اختصاص نفي العذر بالمنافقين في زمن التنزيل، وجريان العذر بالجهل على من بعدهم.' },
           { key: 'D', text: 'كفر من تعمد التكلم بكلمة الردة لدنيا أو مزاح، وأنه لا يُعذر في ذلك إلا الملجأ بالإكراه.' }
         ],
         correctKey: 'D',
-        explanation: 'الآيتان قاطعتان في أن من تكلم بكلمة الكفر كفر ولو كان مازحاً أو لاعباً أو خائفاً على دنياه، وأنه لا عذر لأحد إلا الملجأ بالإكراه مع اطمئنان قلبه بالإيمان.'
+        explanation: 'كفر من تعمد التكلم بكلمة الكفر ولو كان مازحاً، ولم يعذر الله أحداً تكلم بالكفر خوفاً على دنيا أو مداراة إلا المكره الملجأ مع طمأنينة قلبه بالإيمان.'
       }
     ];
+    // --- State Management ---
+    let activeTabId = 'tab-overview';
+    let currentCardIndex = 0;
+    let quizMode = 'cards'; // 'cards' or 'mcq'
+    let currentMcqIndex = 0;
+    let objUserAnswers = {}; // { questionIndex: 'A' | 'B' | 'C' | 'D' }
+    let missedIds = new Set(); // Shubuhat IDs
+    let missedMcqQuestions = new Set(); // General questions (IDs 1, 4, 9, 10 etc.)
+    let masteredCount = 0;
+    let globalFontScale = 100;
 
-    // --- State ---
-    let masteredIds = new Set(JSON.parse(localStorage.getItem('kashf_mastered') || '[]'));
-    let missedIds = new Set(JSON.parse(localStorage.getItem('kashf_missed') || '[]'));
-    let globalFontScale = parseInt(localStorage.getItem('kashf_global_font_scale') || '100', 10);
-    let currentShubhaFilter = 'all';
-    
-    let currentQuizItem = null;
-    
-    let objCurrentIndex = 0;
-    let objUserAnswers = {};
-    let objIsSubmitted = false;
-
-    // --- Audio API (Web Audio API) ---
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // --- Web Audio API (مؤثرات صوتية نغمية خالصة بدون ملفات خارجية) ---
+    let audioCtx = null;
     function playAudioTone(type) {
-      if(audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      
-      const now = audioCtx.currentTime;
-      if (type === 'click') {
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(600, now);
-        osc.frequency.exponentialRampToValueAtTime(300, now + 0.1);
-        gain.gain.setValueAtTime(0.1, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-        osc.start(now); osc.stop(now + 0.1);
-      } else if (type === 'success') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(400, now);
-        osc.frequency.setValueAtTime(600, now + 0.1);
-        osc.frequency.setValueAtTime(800, now + 0.2);
-        gain.gain.setValueAtTime(0.1, now);
-        gain.gain.linearRampToValueAtTime(0, now + 0.4);
-        osc.start(now); osc.stop(now + 0.4);
-      } else if (type === 'error') {
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(300, now);
-        osc.frequency.linearRampToValueAtTime(150, now + 0.3);
-        gain.gain.setValueAtTime(0.1, now);
-        gain.gain.linearRampToValueAtTime(0, now + 0.3);
-        osc.start(now); osc.stop(now + 0.3);
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'success') {
+          // نغمة تصاعدية مبهجة (Chime)
+          const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+          notes.forEach((freq, idx) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+            gain.gain.setValueAtTime(0.12, now + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now + idx * 0.08);
+            osc.stop(now + idx * 0.08 + 0.26);
+          });
+        } else if (type === 'wrong') {
+          // نغمة تنبيه منخفضة لطيفة (Gentle Descending Buzz)
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(140, now + 0.25);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.26);
+        } else if (type === 'click') {
+          // صوت نقرة ناعمة
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          gain.gain.setValueAtTime(0.04, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        }
+      } catch (err) {
+        console.warn('Audio play error:', err);
       }
     }
 
-    // --- Core UI Functions ---
-    function initTheme() {
-      const isDark = localStorage.getItem('kashf_theme') === 'dark' || (!localStorage.getItem('kashf_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-      if (isDark) document.documentElement.classList.add('dark');
-      updateThemeIcons();
-    }
-    
-    function toggleTheme() {
-      document.documentElement.classList.toggle('dark');
-      localStorage.setItem('kashf_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-      updateThemeIcons();
+    // --- Tab Switching Logic ---
+    function switchTab(targetTabId) {
       playAudioTone('click');
-    }
-    
-    function updateThemeIcons() {
-      const isDark = document.documentElement.classList.contains('dark');
-      document.getElementById('theme-icon-light').classList.toggle('hidden', !isDark);
-      document.getElementById('theme-icon-dark').classList.toggle('hidden', isDark);
-    }
+      const tabs = document.querySelectorAll('.tab-content');
+      tabs.forEach(tab => tab.classList.add('hidden'));
 
-    function showToast(msg, icon = 'ℹ️') {
-      const t = document.getElementById('toast');
-      document.getElementById('toast-message').innerText = msg;
-      document.getElementById('toast-icon').innerText = icon;
-      t.classList.remove('opacity-0');
-      setTimeout(() => t.classList.add('opacity-0'), 3000);
-    }
+      const targetTab = document.getElementById(targetTabId);
+      if (targetTab) {
+        targetTab.classList.remove('hidden');
+        activeTabId = targetTabId;
+      }
 
-    function switchTab(tabId) {
-      playAudioTone('click');
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.getElementById(tabId).classList.remove('hidden');
-      
-      document.querySelectorAll('.nav-tab').forEach(el => {
-        el.classList.remove('text-emerald-700', 'dark:text-emerald-400', 'bg-emerald-50', 'dark:bg-emerald-950/60');
-        if (el.id === 'btn-' + tabId && !el.id.includes('quiz') && !el.id.includes('review')) {
-          el.classList.add('text-emerald-700', 'dark:text-emerald-400', 'bg-emerald-50', 'dark:bg-emerald-950/60');
-        }
+      // تحديث أزرار التنقل
+      const navButtons = document.querySelectorAll('.nav-tab-btn');
+      navButtons.forEach(btn => {
+        btn.classList.remove('bg-emerald-50', 'dark:bg-emerald-950/60', 'text-emerald-800', 'dark:text-emerald-300', 'border', 'border-emerald-200', 'dark:border-emerald-800');
+        btn.classList.add('text-slate-600', 'dark:text-slate-400');
       });
-      window.scrollTo({top: 0, behavior: 'smooth'});
+
+      const activeBtn = document.getElementById(`nav-btn-${targetTabId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-600', 'dark:text-slate-400');
+        activeBtn.classList.add('bg-emerald-50', 'dark:bg-emerald-950/60', 'text-emerald-800', 'dark:text-emerald-300', 'border', 'border-emerald-200', 'dark:border-emerald-800');
+      }
+
+      if (targetTabId === 'tab-review') {
+        renderReviewBox();
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- Global Page Zoom Logic ---
+    // --- Dark/Light Theme Switcher ---
+    function initTheme() {
+      const isDark = localStorage.getItem('shubuhat_theme') === 'dark' ||
+        (!('shubuhat_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('theme-icon').innerText = '☀️';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('theme-icon').innerText = '🌙';
+      }
+    }
+
+    function toggleTheme() {
+      playAudioTone('click');
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('shubuhat_theme', isDark ? 'dark' : 'light');
+      document.getElementById('theme-icon').innerText = isDark ? '☀️' : '🌙';
+      showToast(isDark ? 'تم تفعيل الوضع الليلي' : 'تم تفعيل الوضع النهاري', '🎨');
+    }
+    // --- Global Font Size Scaling (تكبير وتصغير الصفحة بالكامل) ---
     function adjustGlobalFontSize(delta) {
       playAudioTone('click');
-      // مقدار القفزة 15% لتكون واضحة ومناسبة لشاشات الجوال
-      globalFontScale += (delta * 15);
-      if (globalFontScale < 70) globalFontScale = 70;
-      if (globalFontScale > 160) globalFontScale = 160;
+      globalFontScale += delta;
+      if (globalFontScale < 80) globalFontScale = 80;
+      if (globalFontScale > 140) globalFontScale = 140;
       applyGlobalFontSize();
-      showToast(`حجم خط الصفحة: ${globalFontScale}%`, '🔍');
+      showToast(`مقياس الخط: ${globalFontScale}%`, '🔍');
     }
 
     function resetGlobalFontSize() {
       playAudioTone('click');
       globalFontScale = 100;
       applyGlobalFontSize();
-      showToast('تمت استعادة حجم الخط الافتراضي (100%)', '🔄');
+      showToast('تمت استعادة حجم الخط الافتراضي', '🔄');
     }
 
     function applyGlobalFontSize() {
-      localStorage.setItem('kashf_global_font_scale', globalFontScale);
-      // تغيير حجم خط جذر المستند لتتكبر وتصغر كافة عناصر الصفحة بشكل متناسق
-      document.documentElement.style.fontSize = `${globalFontScale}%`;
-      const ind = document.getElementById('global-font-indicator');
-      if (ind) ind.innerText = `${globalFontScale}%`;
+      document.documentElement.style.fontSize = `${16 * (globalFontScale / 100)}px`;
+      const badge = document.getElementById('font-scale-badge');
+      if (badge) badge.innerText = `${globalFontScale}%`;
+      localStorage.setItem('shubuhat_font_scale', globalFontScale);
+    }
+
+    // --- Toast Notification ---
+    let toastTimer = null;
+    function showToast(msg, icon = '✨') {
+      const toast = document.getElementById('toast');
+      const msgEl = document.getElementById('toast-message');
+      const iconEl = document.getElementById('toast-icon');
+      if (!toast || !msgEl) return;
+
+      msgEl.innerText = msg;
+      if (iconEl) iconEl.innerText = icon;
+
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2400);
+    }
+
+    // --- Local Storage Management ---
+    function loadSavedState() {
+      try {
+        const savedMissed = localStorage.getItem('shubuhat_missed');
+        if (savedMissed) missedIds = new Set(JSON.parse(savedMissed));
+
+        const savedMissedMcq = localStorage.getItem('shubuhat_missed_mcq');
+        if (savedMissedMcq) missedMcqQuestions = new Set(JSON.parse(savedMissedMcq));
+
+        const savedMastered = localStorage.getItem('shubuhat_mastered');
+        if (savedMastered) masteredCount = parseInt(savedMastered, 10) || 0;
+
+        const savedScale = localStorage.getItem('shubuhat_font_scale');
+        if (savedScale) {
+          globalFontScale = parseInt(savedScale, 10) || 100;
+        }
+      } catch (e) {
+        console.warn('LocalStorage error:', e);
+      }
     }
 
     function saveState() {
-      localStorage.setItem('kashf_mastered', JSON.stringify([...masteredIds]));
-      localStorage.setItem('kashf_missed', JSON.stringify([...missedIds]));
+      try {
+        localStorage.setItem('shubuhat_missed', JSON.stringify([...missedIds]));
+        localStorage.setItem('shubuhat_missed_mcq', JSON.stringify([...missedMcqQuestions]));
+        localStorage.setItem('shubuhat_mastered', masteredCount.toString());
+      } catch (e) {
+        console.warn('LocalStorage save error:', e);
+      }
       updateAllCounters();
     }
 
     function updateAllCounters() {
-      document.getElementById('nav-review-badge').innerText = missedIds.size;
-      const progress = Math.round((masteredIds.size / 13) * 100);
-      document.getElementById('overview-mastery-rate').innerText = progress + '%';
-      document.getElementById('quiz-mastery-text').innerText = `تم إتقان: ${masteredIds.size} من 13`;
-      renderReviewBox();
-    }
+      const badge = document.getElementById('review-counter-badge');
+      const totalMissed = missedIds.size + missedMcqQuestions.size;
+      if (badge) badge.innerText = totalMissed;
 
-    // --- Tab 3: Shubuhat Rendering ---
-    function renderShubuhatAccordion(filter = 'all') {
-      const cont = document.getElementById('shubuhat-accordion-container');
-      cont.innerHTML = '';
-      
-      shubuhatData.forEach((item, idx) => {
-        if (filter !== 'all' && item.category !== filter) return;
-        
+      const statEl = document.getElementById('mastery-rate-stat');
+      if (statEl) {
+        const rate = Math.min(100, Math.round((masteredCount / shubuhatData.length) * 100));
+        statEl.innerText = `${rate}%`;
+      }
+    }
+    // --- Shubuhat Accordion Rendering ---
+    let currentShubhaFilter = 'all';
+
+    function renderShubuhatAccordion() {
+      const container = document.getElementById('shubuhat-accordion-container');
+      if (!container) return;
+
+      container.innerHTML = '';
+      const filtered = shubuhatData.filter(s => currentShubhaFilter === 'all' || s.category === currentShubhaFilter);
+
+      filtered.forEach(item => {
         const isMissed = missedIds.has(item.id);
-        
         const card = document.createElement('div');
-        card.className = `rounded-2xl border transition-all ${isMissed ? 'bg-amber-50/30 border-amber-200 dark:border-amber-900/50 dark:bg-amber-950/10' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800'}`;
+        card.id = `shubha-card-${item.id}`;
+        card.className = `rounded-2xl border transition-all duration-200 overflow-hidden ${
+          isMissed 
+            ? 'bg-amber-50/40 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800' 
+            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm'
+        }`;
+
         card.innerHTML = `
-          <button onclick="toggleShubha(${item.id})" class="w-full text-right p-5 flex items-start justify-between gap-4 focus:outline-none hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl transition">
-            <div class="flex-1">
-              <span class="text-xs font-bold text-slate-500 block mb-2">شبهة رقم (${idx+1}) ${isMissed ? '<span class="text-red-500 mr-2">⚠️ متعثرة</span>' : ''}</span>
-              <h3 class="text-base sm:text-lg font-bold leading-loose text-slate-900 dark:text-white">${item.shubha}</h3>
+          <div onclick="toggleShubha(${item.id})" class="p-4 sm:p-5 flex items-start justify-between gap-3 cursor-pointer hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition">
+            <div class="flex items-start gap-3">
+              <span class="w-7 h-7 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">
+                ${item.id}
+              </span>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-[11px] font-bold text-slate-400 dark:text-slate-500">الشبهة رقم (${item.id})</span>
+                  ${isMissed ? '<span class="px-2 py-0.2 rounded-full text-[10px] font-black bg-amber-500 text-white">متعثرة</span>' : ''}
+                </div>
+                <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug">${item.shubha}</h3>
+              </div>
             </div>
-            <div id="icon-${item.id}" class="w-10 h-10 flex-shrink-0 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-xl text-emerald-600 transition-transform shadow-sm">+</div>
-          </button>
-          <div id="answer-${item.id}" class="hidden px-5 pb-5 pt-2 border-t border-slate-100 dark:border-slate-800">
-            <div class="shubha-answer-content text-emerald-900 dark:text-emerald-100 bg-emerald-50/80 dark:bg-emerald-900/30 p-5 rounded-xl text-base sm:text-lg leading-loose border border-emerald-100 dark:border-emerald-800">
-              <span class="font-bold text-emerald-700 dark:text-emerald-400 block mb-2">الرد السديد:</span>
-              ${item.jawab}
+            <div id="icon-${item.id}" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center text-sm font-bold flex-shrink-0 transition-transform duration-200">
+              +
+            </div>
+          </div>
+
+          <div id="answer-${item.id}" class="hidden p-4 sm:p-5 pt-0 border-t border-slate-100 dark:border-slate-800/80 space-y-3 bg-slate-50/50 dark:bg-slate-950/30 animate-fadeIn">
+            <div class="pt-3">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400">الجواب السديد المحكم:</span>
+                <div class="flex items-center gap-2">
+                  <button onclick="copyAnswerText(${item.id})" title="نسخ الرد" class="p-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-emerald-600 text-xs transition">
+                    📋 نسخ
+                  </button>
+                  <button onclick="toggleMissedStatus(${item.id})" class="px-2 py-1 rounded-lg text-xs font-bold transition ${isMissed ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'}">
+                    ${isMissed ? '⚠️ بالمتعثرات' : '➕ إضافة للمتعثرات'}
+                  </button>
+                </div>
+              </div>
+              <p class="text-sm sm:text-base leading-loose text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800">${item.jawab}</p>
             </div>
           </div>
         `;
-        cont.appendChild(card);
+
+        container.appendChild(card);
       });
     }
 
@@ -707,31 +1110,32 @@
       playAudioTone('click');
       const ans = document.getElementById(`answer-${id}`);
       const icon = document.getElementById(`icon-${id}`);
-      if(ans.classList.contains('hidden')){
+      if (!ans || !icon) return;
+
+      const isHidden = ans.classList.contains('hidden');
+      if (isHidden) {
         ans.classList.remove('hidden');
         icon.innerText = '−';
-        icon.classList.add('rotate-180', 'bg-emerald-100', 'dark:bg-emerald-900/50');
+        icon.classList.add('rotate-180', 'bg-emerald-100', 'text-emerald-800', 'dark:bg-emerald-950', 'dark:text-emerald-300');
       } else {
         ans.classList.add('hidden');
         icon.innerText = '+';
-        icon.classList.remove('rotate-180', 'bg-emerald-100', 'dark:bg-emerald-900/50');
+        icon.classList.remove('rotate-180', 'bg-emerald-100', 'text-emerald-800', 'dark:bg-emerald-950', 'dark:text-emerald-300');
       }
     }
 
-    function expandAllShubuhat(expand) {
+    function toggleAllShubuhat(expand) {
       playAudioTone('click');
-      shubuhatData.forEach(s => {
-        const ans = document.getElementById(`answer-${s.id}`);
-        const icon = document.getElementById(`icon-${s.id}`);
-        if(ans){
-          if(expand) { 
-            ans.classList.remove('hidden'); 
-            icon.innerText='−'; 
-            icon.classList.add('rotate-180', 'bg-emerald-100', 'dark:bg-emerald-900/50');
-          } else { 
-            ans.classList.add('hidden'); 
-            icon.innerText='+';
-            icon.classList.remove('rotate-180', 'bg-emerald-100', 'dark:bg-emerald-900/50'); 
+      shubuhatData.forEach(item => {
+        const ans = document.getElementById(`answer-${item.id}`);
+        const icon = document.getElementById(`icon-${item.id}`);
+        if (ans && icon) {
+          if (expand) {
+            ans.classList.remove('hidden');
+            icon.innerText = '−';
+          } else {
+            ans.classList.add('hidden');
+            icon.innerText = '+';
           }
         }
       });
@@ -740,270 +1144,561 @@
     function filterShubuhat(cat) {
       playAudioTone('click');
       currentShubhaFilter = cat;
-      document.querySelectorAll('.filter-btn').forEach(b => {
-        b.classList.remove('bg-emerald-600', 'text-white');
-        b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+      const btns = document.querySelectorAll('.shubha-filter-btn');
+      btns.forEach(b => {
+        if (b.dataset.filter === cat) {
+          b.className = 'shubha-filter-btn px-3 py-1.5 rounded-xl bg-emerald-600 text-white shadow-sm';
+        } else {
+          b.className = 'shubha-filter-btn px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300';
+        }
       });
-      const btn = document.querySelector(`.filter-btn[data-cat="${cat}"]`);
-      if(btn) {
-        btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
-        btn.classList.add('bg-emerald-600', 'text-white');
+      renderShubuhatAccordion();
+    }
+
+    function copyAnswerText(id) {
+      playAudioTone('click');
+      const shubha = shubuhatData.find(s => s.id === id);
+      if (!shubha) return;
+
+      const text = `الشبهة: ${shubha.shubha}\nالجواب المحكم: ${shubha.jawab}\n[كشف الشبهات - تقريب تفاعلي]`;
+      const tempInput = document.createElement('textarea');
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast('تم نسخ نص الرد بنجاح!', '📋');
+      } catch (err) {
+        showToast('تعذر النسخ التلقائي', '⚠️');
       }
-      renderShubuhatAccordion(cat);
+      document.body.removeChild(tempInput);
     }
 
-    // --- Tab 6: Quiz (Cards Mode) ---
-    function pickRandomQuizQuestion() {
+    function toggleMissedStatus(id) {
       playAudioTone('click');
-      const avail = shubuhatData.filter(s => !masteredIds.has(s.id));
-      const pool = avail.length > 0 ? avail : shubuhatData; 
-      currentQuizItem = pool[Math.floor(Math.random() * pool.length)];
-      
-      document.getElementById('quiz-card-number').innerText = `شبهة رقم: ${currentQuizItem.id}`;
-      document.getElementById('quiz-shubha-text').innerText = currentQuizItem.shubha;
-      document.getElementById('quiz-answer-text').innerText = currentQuizItem.jawab;
-      
-      document.getElementById('quiz-answer-section').classList.add('hidden');
-      document.getElementById('quiz-reveal-btn').classList.remove('hidden');
-    }
-
-    function revealQuizAnswer() {
-      playAudioTone('click');
-      document.getElementById('quiz-reveal-btn').classList.add('hidden');
-      document.getElementById('quiz-answer-section').classList.remove('hidden');
-    }
-
-    function handleQuizVerdict(isCorrect) {
-      if(isCorrect) {
-        playAudioTone('success');
-        masteredIds.add(currentQuizItem.id);
-        missedIds.delete(currentQuizItem.id);
-        showToast('ممتاز! تم تسجيل الإتقان', '✅');
+      if (missedIds.has(id)) {
+        missedIds.delete(id);
+        showToast(`أُزيلت الشبهة (${id}) من صندوق المتعثرات`, '✅');
       } else {
-        playAudioTone('error');
-        missedIds.add(currentQuizItem.id);
-        masteredIds.delete(currentQuizItem.id);
-        showToast('تم الترحيل لصندوق المتعثرات', '⚠️');
+        missedIds.add(id);
+        showToast(`أُضيفت الشبهة (${id}) لصندوق المتعثرات`, '⚠️');
       }
       saveState();
-      setTimeout(pickRandomQuizQuestion, 800);
+      renderShubuhatAccordion();
     }
-
-    // --- Tab 6: Quiz (MCQ Mode) ---
+    // --- Quiz Modes Management ---
     function setQuizMode(mode) {
       playAudioTone('click');
-      const vCards = document.getElementById('quiz-mode-cards-view');
-      const vMcq = document.getElementById('quiz-mode-mcq-view');
-      const btnCards = document.getElementById('btn-mode-cards');
-      const btnMcq = document.getElementById('btn-mode-mcq');
-      
-      if(mode === 'mcq') {
-        vCards.classList.add('hidden');
-        vMcq.classList.remove('hidden');
-        btnMcq.className = 'flex-1 px-4 py-2 rounded-lg text-xs font-bold transition-all bg-purple-600 text-white shadow-sm';
-        btnCards.className = 'flex-1 px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-600 dark:text-slate-300 hover:text-purple-600';
-        if(!objIsSubmitted && Object.keys(objUserAnswers).length===0) renderObjectiveQuestion();
+      quizMode = mode;
+      const btnCards = document.getElementById('btn-quiz-mode-cards');
+      const btnMcq = document.getElementById('btn-quiz-mode-mcq');
+      const viewCards = document.getElementById('quiz-mode-cards-view');
+      const viewMcq = document.getElementById('quiz-mode-mcq-view');
+
+      if (mode === 'cards') {
+        btnCards.className = 'px-3.5 py-1.5 rounded-xl bg-purple-600 text-white shadow-sm transition';
+        btnMcq.className = 'px-3.5 py-1.5 rounded-xl text-slate-600 dark:text-slate-300 transition';
+        viewCards.classList.remove('hidden');
+        viewMcq.classList.add('hidden');
+        loadQuizCard(currentCardIndex);
       } else {
-        vCards.classList.remove('hidden');
-        vMcq.classList.add('hidden');
-        btnCards.className = 'flex-1 px-4 py-2 rounded-lg text-xs font-bold transition-all bg-purple-600 text-white shadow-sm';
-        btnMcq.className = 'flex-1 px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-600 dark:text-slate-300 hover:text-purple-600';
-        if(!currentQuizItem) pickRandomQuizQuestion();
+        btnMcq.className = 'px-3.5 py-1.5 rounded-xl bg-purple-600 text-white shadow-sm transition';
+        btnCards.className = 'px-3.5 py-1.5 rounded-xl text-slate-600 dark:text-slate-300 transition';
+        viewMcq.classList.remove('hidden');
+        viewCards.classList.add('hidden');
+        renderMcqQuestion(currentMcqIndex);
       }
     }
 
-    function renderObjectiveQuestion() {
-      const q = objectiveQuestionsData[objCurrentIndex];
-      const total = objectiveQuestionsData.length;
+    // --- المسار الأول: بطاقات الاستحضار الذهني ---
+    function loadQuizCard(index) {
+      currentCardIndex = (index + shubuhatData.length) % shubuhatData.length;
+      const item = shubuhatData[currentCardIndex];
       
-      document.getElementById('mcq-question-tracker').innerText = `${objCurrentIndex + 1} / ${total}`;
-      document.getElementById('mcq-progress-bar').style.width = `${((objCurrentIndex + 1)/total)*100}%`;
-      document.getElementById('mcq-topic-badge').innerText = q.topic;
-      document.getElementById('mcq-question-text').innerText = `${objCurrentIndex + 1}. ${q.question}`;
+      document.getElementById('quiz-card-badge').innerText = `شبهة رقم (${item.id})`;
+      document.getElementById('quiz-card-counter').innerText = `الشبهة ${currentCardIndex + 1} من ${shubuhatData.length}`;
+      document.getElementById('quiz-card-question').innerText = item.shubha;
+      document.getElementById('quiz-card-answer-text').innerText = item.jawab;
       
-      document.getElementById('mcq-btn-prev').disabled = (objCurrentIndex === 0);
-      if(objCurrentIndex === total - 1) {
-        document.getElementById('mcq-btn-next').classList.add('hidden');
-        document.getElementById('mcq-btn-finish').classList.remove('hidden');
+      document.getElementById('quiz-reveal-btn-container').classList.remove('hidden');
+      document.getElementById('quiz-card-answer-box').classList.add('hidden');
+    }
+
+    function revealQuizCardAnswer() {
+      playAudioTone('click');
+      document.getElementById('quiz-reveal-btn-container').classList.add('hidden');
+      document.getElementById('quiz-card-answer-box').classList.remove('hidden');
+    }
+
+    function pickRandomQuizCard() {
+      playAudioTone('click');
+      const rand = Math.floor(Math.random() * shubuhatData.length);
+      loadQuizCard(rand);
+    }
+
+    function recordSelfAssessment(isCorrect) {
+      const item = shubuhatData[currentCardIndex];
+      if (isCorrect) {
+        playAudioTone('success');
+        masteredCount++;
+        if (missedIds.has(item.id)) missedIds.delete(item.id);
+        showToast('أحسنت! أتقنت استحضار الجواب', '🌟');
       } else {
-        document.getElementById('mcq-btn-next').classList.remove('hidden');
-        document.getElementById('mcq-btn-finish').classList.add('hidden');
+        playAudioTone('wrong');
+        missedIds.add(item.id);
+        showToast('رُحِّلت الشبهة لصندوق المتعثرات', '⚠️');
+      }
+      saveState();
+      setTimeout(() => {
+        loadQuizCard(currentCardIndex + 1);
+      }, 500);
+    }
+
+    // --- المسار الثاني: الاختبار الموضوعي (10 أسئلة خيارات) ---
+    function renderMcqQuestion(index) {
+      currentMcqIndex = index;
+      const q = objectiveQuestionsData[index];
+      if (!q) return;
+
+      document.getElementById('mcq-progress-text').innerText = `السؤال ${index + 1} من ${objectiveQuestionsData.length}`;
+      document.getElementById('mcq-progress-bar').style.width = `${((index + 1) / objectiveQuestionsData.length) * 100}%`;
+      document.getElementById('mcq-question-text').innerText = q.question;
+
+      // أزرار التنقل
+      document.getElementById('mcq-prev-btn').disabled = (index === 0);
+      const nextBtn = document.getElementById('mcq-next-btn');
+      const finishBtn = document.getElementById('mcq-finish-btn');
+
+      if (index === objectiveQuestionsData.length - 1) {
+        nextBtn.classList.add('hidden');
+        finishBtn.classList.remove('hidden');
+      } else {
+        nextBtn.classList.remove('hidden');
+        finishBtn.classList.add('hidden');
       }
 
-      const optsCont = document.getElementById('mcq-options-container');
-      optsCont.innerHTML = '';
-      const selKey = objUserAnswers[objCurrentIndex];
+      // بناء الخيارات الأربعة
+      const cont = document.getElementById('mcq-options-container');
+      cont.innerHTML = '';
+
+      const selected = objUserAnswers[index];
 
       q.options.forEach(opt => {
-        const isSel = (selKey === opt.key);
-        const b = document.createElement('button');
-        b.className = `w-full text-right p-4 rounded-xl border flex items-start gap-4 transition-all duration-200 ${isSel ? 'bg-purple-100 dark:bg-purple-900/40 border-purple-500 shadow-sm scale-[1.01]' : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-700 hover:bg-slate-100 dark:hover:bg-slate-800/80'}`;
-        b.onclick = () => { playAudioTone('click'); objUserAnswers[objCurrentIndex] = opt.key; renderObjectiveQuestion(); };
-        b.innerHTML = `<span class="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg font-bold text-sm ${isSel?'bg-purple-600 text-white':'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}">${opt.key}</span><span class="text-base font-semibold leading-relaxed pt-1">${opt.text}</span>`;
-        optsCont.appendChild(b);
+        const isSelected = selected === opt.key;
+        const btn = document.createElement('button');
+        btn.onclick = () => selectMcqOption(index, opt.key);
+        btn.className = `w-full text-right p-4 rounded-2xl border transition-all duration-150 flex items-start gap-3 ${
+          isSelected 
+            ? 'bg-purple-50 dark:bg-purple-950/40 border-purple-500 ring-2 ring-purple-400/40 text-purple-900 dark:text-purple-200' 
+            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60'
+        }`;
+
+        btn.innerHTML = `
+          <span class="w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5 ${
+            isSelected 
+              ? 'bg-purple-600 text-white' 
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+          }">${opt.key}</span>
+          <span class="text-xs sm:text-sm font-medium leading-relaxed">${opt.text}</span>
+        `;
+        cont.appendChild(btn);
       });
     }
 
-    function navigateObjectiveQuestion(dir) {
+    function selectMcqOption(qIdx, key) {
       playAudioTone('click');
-      if (objCurrentIndex + dir >= 0 && objCurrentIndex + dir < objectiveQuestionsData.length) {
-        objCurrentIndex += dir;
-        renderObjectiveQuestion();
+      objUserAnswers[qIdx] = key;
+      renderMcqQuestion(qIdx);
+    }
+
+    function prevMcqQuestion() {
+      if (currentMcqIndex > 0) {
+        playAudioTone('click');
+        renderMcqQuestion(currentMcqIndex - 1);
+      }
+    }
+
+    function nextMcqQuestion() {
+      if (currentMcqIndex < objectiveQuestionsData.length - 1) {
+        playAudioTone('click');
+        renderMcqQuestion(currentMcqIndex + 1);
+      }
+    }
+
+    function finishObjectiveExam() {
+      // التأكد من الإجابة على كافة الأسئلة
+      const answeredCount = Object.keys(objUserAnswers).length;
+      if (answeredCount < objectiveQuestionsData.length) {
+        showToast(`أجبت عن ${answeredCount} من ${objectiveQuestionsData.length} أسئلة، يُرجى إكمال الباقي!`, '⚠️');
+        return;
+      }
+
+      // حساب النتيجة
+      let correctAnswersCount = 0;
+      objectiveQuestionsData.forEach((q, idx) => {
+        if (objUserAnswers[idx] === q.correctKey) {
+          correctAnswersCount++;
+        }
+      });
+
+      const percentage = Math.round((correctAnswersCount / objectiveQuestionsData.length) * 100);
+
+      // تشغيل الصوت التفاعلي حسب النتيجة
+      if (percentage >= 80) {
+        playAudioTone('success');
+      } else {
+        playAudioTone('wrong');
+      }
+
+      // إخفاء صندوق الأسئلة وإظهار لوحة النتيجة
+      document.getElementById('mcq-active-box').classList.add('hidden');
+      const resultDash = document.getElementById('mcq-result-dashboard');
+      resultDash.classList.remove('hidden');
+
+      document.getElementById('mcq-result-percentage').innerText = `${percentage}%`;
+
+      let grade = 'ممتاز ومتقن لأصول المتن';
+      let evalText = 'ما شاء الله! إدراك عميق ومحكم لأدلة التوحيد وفروق الشبهات وعلل تفنيدها كما قررها المصنف.';
+      if (percentage < 50) {
+        grade = 'يحتاج إلى مراجعة وتثبيت';
+        evalText = 'يُنصح بإعادة قراءة الجواب المجمل والمفصل ومراجعة الأدلة بتركيز.';
+      } else if (percentage < 80) {
+        grade = 'جيد ولديك فهم طيب';
+        evalText = 'استيعاب مبارك، ركّز على تدقيق الفوارق الدقيقة في الشبهات المتبقية.';
+      }
+
+      document.getElementById('mcq-result-grade').innerText = grade;
+      document.getElementById('mcq-result-evaluation').innerText = evalText;
+
+      // بناء العرض التفصيلي للإجابات
+      renderExamDetailedBreakdown();
+      showToast('تم تصحيح الاختبار ورصد النتيجة!', '📊');
+    }
+
+    function renderExamDetailedBreakdown() {
+      const container = document.getElementById('mcq-detailed-breakdown-list');
+      container.innerHTML = '';
+
+      objectiveQuestionsData.forEach((q, idx) => {
+        const userChoice = objUserAnswers[idx];
+        const isCorrect = userChoice === q.correctKey;
+        const chosenOpt = q.options.find(o => o.key === userChoice);
+        const correctOpt = q.options.find(o => o.key === q.correctKey);
+
+        const card = document.createElement('div');
+        card.className = `p-4 sm:p-5 rounded-2xl border print-break-inside-avoid ${
+          isCorrect 
+            ? 'bg-emerald-50/40 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800' 
+            : 'bg-red-50/40 dark:bg-red-950/20 border-red-300 dark:border-red-800'
+        }`;
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold ${isCorrect ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}">
+              السؤال (${idx + 1}): ${isCorrect ? '✅ إجابة صحيحة' : '❌ إجابة خاطئة'}
+            </span>
+            <span class="text-[11px] text-slate-400">مفتاح الحل: (${q.correctKey})</span>
+          </div>
+          <p class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white mb-2 leading-relaxed">${q.question}</p>
+          <div class="text-xs space-y-1 text-slate-700 dark:text-slate-300">
+            <div><strong>إجابتك:</strong> (${userChoice}) ${chosenOpt ? chosenOpt.text : 'لم يُجب'}</div>
+            ${!isCorrect ? `<div class="text-emerald-700 dark:text-emerald-400 font-bold"><strong>الصواب المعتمد:</strong> (${q.correctKey}) ${correctOpt.text}</div>` : ''}
+            <div class="text-slate-500 pt-1 text-[11px] leading-relaxed"><strong>البيان والتعليل:</strong> ${q.explanation}</div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function transferAllExamMissedToReviewBox() {
+      playAudioTone('click');
+      let count = 0;
+      objectiveQuestionsData.forEach((q, idx) => {
+        if (objUserAnswers[idx] !== q.correctKey) {
+          if (q.shubhaRefId > 0) {
+            missedIds.add(q.shubhaRefId);
+            count++;
+          } else {
+            // الأسئلة العامة المستقلة (1, 4, 9, 10)
+            missedMcqQuestions.add(q.id);
+            count++;
+          }
+        }
+      });
+
+      saveState();
+      renderShubuhatAccordion();
+      if (count > 0) {
+        showToast(`تم ترحيل ${count} مسألة متعثرة إلى صندوق المراجعة`, '⚠️');
+      } else {
+        showToast('ما شاء الله! ليس لديك أي إجابة خاطئة لترحيلها', '🎉');
       }
     }
 
     function resetObjectiveExam() {
       playAudioTone('click');
-      objCurrentIndex = 0; objUserAnswers = {}; objIsSubmitted = false;
+      objUserAnswers = {};
+      currentMcqIndex = 0;
       document.getElementById('mcq-active-box').classList.remove('hidden');
       document.getElementById('mcq-result-dashboard').classList.add('hidden');
-      renderObjectiveQuestion();
-      window.scrollTo({top: document.getElementById('tab-quiz').offsetTop, behavior: 'smooth'});
+      renderMcqQuestion(0);
+      showToast('أُعيد ضبط الاختبار مجدداً', '🔄');
     }
-
-    function submitObjectiveExam() {
-      if(Object.keys(objUserAnswers).length < objectiveQuestionsData.length) {
-        showToast('يرجى الإجابة على جميع الأسئلة لتصحيح الاختبار', '⚠️'); return;
-      }
-      objIsSubmitted = true;
-      let correct = 0;
-      objectiveQuestionsData.forEach((q, i) => { if(objUserAnswers[i] === q.correctKey) correct++; });
-      const p = Math.round((correct / objectiveQuestionsData.length) * 100);
-      
-      if(p >= 80) playAudioTone('success'); else playAudioTone('error');
-
-      document.getElementById('mcq-active-box').classList.add('hidden');
-      document.getElementById('mcq-result-dashboard').classList.remove('hidden');
-      document.getElementById('mcq-result-percentage').innerText = p + '%';
-      
-      let title='', eval='';
-      if(p === 100){ title='🏆 إتقان تام واستيعاب كامل!'; eval='أحسنت صنعاً.. مستواك يعكس ضبطاً متميزاً لأصول المتن ودقائقه.'; }
-      else if(p >= 70){ title='🌟 مستوى متقدم وجيد جداً'; eval='فهمك ممتاز.. تحتاج فقط للمراجعة وتثبيت بعض المسائل الدقيقة لتصل للإتقان التام.'; }
-      else { title='⚠️ بحاجة للتدبر والمراجعة المتأنية'; eval='ننصحك بالعودة للخارطة الذهنية وقراءة ردود الشبهات بتأمل أكثر وربط المتشابه بالمحكم.'; }
-      
-      document.getElementById('mcq-result-grade').innerText = title;
-      document.getElementById('mcq-result-evaluation').innerText = eval;
-
-      const bd = document.getElementById('mcq-detailed-breakdown-list');
-      bd.innerHTML = '';
-      objectiveQuestionsData.forEach((q, i) => {
-        const u = objUserAnswers[i]; const isCorr = (u === q.correctKey);
-        const html = `
-          <div class="p-5 rounded-2xl border shadow-sm ${isCorr?'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/50':'bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-800/50'}">
-            <h5 class="text-base sm:text-lg font-bold mb-3 leading-loose">${q.question}</h5>
-            <div class="text-sm sm:text-base space-y-2">
-              <p><span class="font-bold text-slate-500">إجابتك:</span> <span class="${isCorr?'text-emerald-700 dark:text-emerald-400':'text-red-600 dark:text-red-400'} font-bold">(${u}) ${q.options.find(o=>o.key===u).text}</span></p>
-              ${!isCorr ? `<p><span class="font-bold text-emerald-700 dark:text-emerald-400">الجواب الصحيح:</span> <span class="font-bold">(${q.correctKey}) ${q.options.find(o=>o.key===q.correctKey).text}</span></p>` : ''}
-              <div class="mt-3 text-slate-700 dark:text-slate-300 p-3 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl leading-loose">
-                <span class="font-bold text-purple-600 dark:text-purple-400">التعليل:</span> ${q.explanation}
-              </div>
-            </div>
-          </div>
-        `;
-        bd.insertAdjacentHTML('beforeend', html);
-      });
-      window.scrollTo({top: document.getElementById('tab-quiz').offsetTop, behavior: 'smooth'});
-    }
-
-    function transferAllExamMissedToReviewBox() {
-      playAudioTone('click');
-      let c = 0;
-      objectiveQuestionsData.forEach((q, i) => {
-        if(objUserAnswers[i] !== q.correctKey) {
-          if (q.shubhaRefId > 0) {
-            // ترحيل الشبهات المرتبطة برقم الشبهة مباشرة
-            missedIds.add(q.shubhaRefId);
-            masteredIds.delete(q.shubhaRefId);
-          } else {
-            // ترحيل الأسئلة العامة المستقلة بإعطائها مُعرّف نصي خاص (mcq_id)
-            missedIds.add('mcq_' + q.id);
-          }
-          c++;
-        }
-      });
-      saveState(); 
-      renderShubuhatAccordion(); 
-      renderReviewBox();
-      if(c > 0) showToast(`تم ترحيل ${c} مسألة لصندوق المتعثرات`, '⚠️');
-      else showToast('لا توجد أخطاء لترحيلها', '✅');
-    }
-
-    // --- Tab 7: Review ---
+    // --- صندوق مراجعة المتعثرات (Review Box) ---
     function renderReviewBox() {
-      const cont = document.getElementById('review-items-container');
-      const empty = document.getElementById('review-empty-state');
-      cont.innerHTML = '';
-      if(missedIds.size === 0) {
-        cont.classList.add('hidden'); empty.classList.remove('hidden'); return;
+      const container = document.getElementById('review-items-container');
+      if (!container) return;
+
+      container.innerHTML = '';
+      const totalMissed = missedIds.size + missedMcqQuestions.size;
+
+      if (totalMissed === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 space-y-3">
+            <div class="text-4xl">🎉</div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">صندوق المتعثرات خالٍ تماماً!</h3>
+            <p class="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">أحسنت! كافة الشبهات والمسائل مستوعبة ومتقنة عندك. إذا أخطأت في أي سؤال لاحقاً سيظهر لك هنا للمراجعة والتثبيت.</p>
+          </div>
+        `;
+        return;
       }
-      cont.classList.remove('hidden'); empty.classList.add('hidden');
-      
-      // 1. استعراض الشبهات المتعثرة
-      shubuhatData.forEach(s => {
-        if(!missedIds.has(s.id)) return;
-        const html = `
-          <div class="p-5 bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-900/50 rounded-2xl shadow-sm">
-            <div class="flex justify-between items-start mb-3">
-              <span class="text-sm font-bold text-amber-700 dark:text-amber-400 px-3 py-1 bg-amber-50 dark:bg-amber-900/30 rounded-full">شبهة (${s.id})</span>
-              <button onclick="removeFromMissed(${s.id})" class="text-xs font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 p-1.5 px-3 rounded-lg transition">إزالة من الصندوق</button>
-            </div>
-            <p class="font-bold text-base sm:text-lg mb-3 leading-loose text-slate-900 dark:text-white">${s.shubha}</p>
-            <div class="p-4 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl text-base sm:text-lg text-emerald-900 dark:text-emerald-100 leading-loose border border-emerald-100 dark:border-emerald-900/50">
-              <span class="font-bold text-emerald-700 dark:text-emerald-400">الرد السديد:</span> ${s.jawab}
-            </div>
+
+      // عرض الشبهات المتعثرة
+      missedIds.forEach(id => {
+        const item = shubuhatData.find(s => s.id === id);
+        if (!item) return;
+
+        const el = document.createElement('div');
+        el.className = 'p-5 rounded-2xl bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-800/80 shadow-sm space-y-3';
+        el.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300">
+              شبهة رقم (${item.id})
+            </span>
+            <button onclick="removeMissedShubha(${item.id})" class="text-xs text-emerald-600 dark:text-emerald-400 font-bold hover:underline">
+              ✅ تم الضبط والإتقان
+            </button>
           </div>
+          <h4 class="text-sm font-bold text-slate-900 dark:text-white">${item.shubha}</h4>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed bg-amber-50/50 dark:bg-amber-950/20 p-3.5 rounded-xl border border-amber-200/60 dark:border-amber-900/40">
+            <strong>الجواب المحكم:</strong> ${item.jawab}
+          </p>
         `;
-        cont.insertAdjacentHTML('beforeend', html);
+        container.appendChild(el);
       });
 
-      // 2. استعراض الأسئلة الموضوعية العامة المتعثرة
-      objectiveQuestionsData.forEach(q => {
-        if(!missedIds.has('mcq_' + q.id)) return;
-        const corrText = q.options.find(o => o.key === q.correctKey).text;
-        const html = `
-          <div class="p-5 bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900/50 rounded-2xl shadow-sm">
-            <div class="flex justify-between items-start mb-3">
-              <span class="text-sm font-bold text-purple-700 dark:text-purple-400 px-3 py-1 bg-purple-50 dark:bg-purple-900/30 rounded-full">سؤال عام: ${q.topic}</span>
-              <button onclick="removeFromMissed('mcq_${q.id}')" class="text-xs font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 p-1.5 px-3 rounded-lg transition">إزالة من الصندوق</button>
-            </div>
-            <p class="font-bold text-base sm:text-lg mb-3 leading-loose text-slate-900 dark:text-white">${q.question}</p>
-            <div class="p-4 bg-purple-50/50 dark:bg-purple-950/20 rounded-xl text-base sm:text-lg text-purple-900 dark:text-purple-100 leading-loose border border-purple-100 dark:border-purple-900/50">
-              <span class="font-bold text-purple-700 dark:text-purple-400 block mb-1">الجواب الصحيح:</span> ${corrText}
-              <hr class="my-3 border-purple-200 dark:border-purple-800/50">
-              <span class="font-bold text-purple-700 dark:text-purple-400 block mb-1">التعليل التأصيلي:</span> ${q.explanation}
-            </div>
+      // عرض الأسئلة العامة المتعثرة
+      missedMcqQuestions.forEach(qId => {
+        const q = objectiveQuestionsData.find(item => item.id === qId);
+        if (!q) return;
+
+        const correctOpt = q.options.find(o => o.key === q.correctKey);
+
+        const el = document.createElement('div');
+        el.className = 'p-5 rounded-2xl bg-white dark:bg-slate-900 border border-purple-300 dark:border-purple-800/80 shadow-sm space-y-3';
+        el.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300">
+              مسألة عامة من المتن (${q.id})
+            </span>
+            <button onclick="removeMissedGeneralQuestion(${q.id})" class="text-xs text-emerald-600 dark:text-emerald-400 font-bold hover:underline">
+              ✅ تم الضبط والإتقان
+            </button>
           </div>
+          <h4 class="text-sm font-bold text-slate-900 dark:text-white">${q.question}</h4>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed bg-purple-50/50 dark:bg-purple-950/20 p-3.5 rounded-xl border border-purple-200/60 dark:border-purple-900/40">
+            <strong>الصواب المقرر:</strong> (${q.correctKey}) ${correctOpt ? correctOpt.text : ''}
+            <br><span class="text-slate-500 text-[11px]">${q.explanation}</span>
+          </p>
         `;
-        cont.insertAdjacentHTML('beforeend', html);
+        container.appendChild(el);
       });
     }
 
-    function removeFromMissed(id) {
+    function removeMissedShubha(id) {
       playAudioTone('click');
-      missedIds.delete(id); 
-      // إذا كان المُعرف رقماً (يعني شبهة) نضيفه للإتقان، أما الأسئلة العامة فلا تُضاف لشريط الإتقان الخاص بالشبهات
-      if(typeof id === 'number') masteredIds.add(id); 
-      saveState(); 
-      renderShubuhatAccordion(); 
-      showToast('تمت إزالتها من الصندوق بنجاح', '✅');
+      missedIds.delete(id);
+      saveState();
+      renderReviewBox();
+      renderShubuhatAccordion();
+      showToast(`تم إتقان الشبهة (${id}) وحذفها من المتعثرات`, '🎉');
     }
-    
+
+    function removeMissedGeneralQuestion(qId) {
+      playAudioTone('click');
+      missedMcqQuestions.delete(qId);
+      saveState();
+      renderReviewBox();
+      showToast(`تم إتقان المسألة وحذفها من المتعثرات`, '🎉');
+    }
+
     function clearAllMissed() {
       playAudioTone('click');
-      missedIds.clear(); 
-      saveState(); 
-      renderShubuhatAccordion(); 
+      missedIds.clear();
+      missedMcqQuestions.clear();
+      saveState();
+      renderReviewBox();
+      renderShubuhatAccordion();
       showToast('تم تفريغ صندوق المراجعة بالكامل', '🗑️');
     }
 
-    // Boot Initialization
-    document.addEventListener('DOMContentLoaded', () => {
+    // --- Search Module Logic ---
+    function openSearchModal() {
+      playAudioTone('click');
+      const modal = document.getElementById('search-modal');
+      modal.classList.remove('hidden');
+      const input = document.getElementById('global-search-input');
+      input.value = '';
+      setTimeout(() => input.focus(), 50);
+      executeSearch('');
+    }
+
+    function closeSearchModal() {
+      document.getElementById('search-modal').classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeSearchModal();
+    });
+
+    function normalizeArabicText(str) {
+      if (!str) return '';
+      return str
+        .replace(/[\u064B-\u065F\u0670]/g, '') // إزالة التشكيل
+        .replace(/[إأآا]/g, 'ا')
+        .replace(/ة/g, 'ه')
+        .replace(/ى/g, 'ي')
+        .trim()
+        .toLowerCase();
+    }
+
+    function executeSearch(query) {
+      const cont = document.getElementById('search-results-container');
+      const qNorm = normalizeArabicText(query);
+
+      if (!qNorm) {
+        cont.innerHTML = `
+          <div class="text-center py-10 text-slate-400 text-sm">
+            اكتب كلمة أو عبارة للبحث الفوري في كافة أقسام المنظومة
+          </div>
+        `;
+        return;
+      }
+
+      const searchableItems = [
+        {
+          tab: 'tab-intro',
+          badge: 'المقدمة',
+          title: '١. تقرير أصل التوحيد وحال المشركين',
+          snippet: 'التوحيد إفراد الله بالعبادة، وهو دين الرسل، كفار قريش يقرون بالربوبية واستحل النبي دماءهم وأموالهم لقصدهم غير الله، معنى لا إله إلا الله.'
+        },
+        {
+          tab: 'tab-mujmal',
+          badge: 'الجواب المجمل',
+          title: '٢. رد المتشابه إلى المحكم',
+          snippet: 'فأما الذين في قلوبهم زيغ فيتبعون ما تشابه منه، المحكم البين أن النبي ﷺ قاتل من أقر بالربوبية لاتخاذهم الشفعاء، وكلام الله لا يتناقض.'
+        },
+        {
+          tab: 'tab-differences',
+          badge: 'المسائل',
+          title: '٤. الفارق بين شرك الأولين والمتأخرين',
+          snippet: 'الأولون يخلصون في الشدائد فإذا ركبوا في الفلك، ويدعون مقربين كالملائكة والأنبياء؛ بخلاف المتأخرين الذين شركهم دائم ويدعون الفساق والمجاهيل.'
+        },
+        {
+          tab: 'tab-conclusion',
+          badge: 'الخاتمة',
+          title: '٥. الخاتمة وحكم المازح والمكره',
+          snippet: 'التوحيد بالقلب واللسان والجوارح، من عرف التوحيد بقلبه وتركه فهو كافر معاند، لا تعتذروا قد كفرتم بعد إيمانكم فيمن تكلم مازحاً، ولا عذر إلا للمكره الملجأ.'
+        }
+      ];
+
+      shubuhatData.forEach(s => {
+        searchableItems.push({
+          tab: 'tab-shubuhat',
+          shubhaId: s.id,
+          badge: `شبهة (${s.id})`,
+          title: s.shubha,
+          snippet: s.jawab
+        });
+      });
+
+      const results = searchableItems.filter(item => {
+        return normalizeArabicText(item.title).includes(qNorm) || normalizeArabicText(item.snippet).includes(qNorm);
+      });
+
+      if (results.length === 0) {
+        cont.innerHTML = `
+          <div class="text-center py-10 text-slate-400 text-sm">
+            لم نجد نتائج مطابقة لـ «<span class="text-amber-600 font-bold">${query}</span>»
+          </div>
+        `;
+        return;
+      }
+
+      cont.innerHTML = '';
+      results.forEach(res => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-emerald-500 hover:bg-emerald-50/40 dark:hover:bg-emerald-950/20 cursor-pointer transition flex flex-col gap-1.5';
+        itemEl.onclick = () => jumpToSearchResult(res);
+        itemEl.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300">${res.badge}</span>
+            <span class="text-xs text-slate-400">انتقال ⬅️</span>
+          </div>
+          <h4 class="text-sm font-bold text-slate-900 dark:text-white leading-snug">${res.title}</h4>
+          <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">${res.snippet}</p>
+        `;
+        cont.appendChild(itemEl);
+      });
+    }
+
+    function jumpToSearchResult(res) {
+      closeSearchModal();
+      switchTab(res.tab);
+      if (res.shubhaId) {
+        setTimeout(() => {
+          const ans = document.getElementById(`answer-${res.shubhaId}`);
+          if (ans && ans.classList.contains('hidden')) {
+            toggleShubha(res.shubhaId);
+          }
+          const icon = document.getElementById(`icon-${res.shubhaId}`);
+          if (icon) {
+            icon.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 150);
+      }
+    }
+    // --- Print & Certificate Module Logic ---
+    function updateStudentNameDisplay(name) {
+      const display = document.getElementById('student-name-print-display');
+      if (name && name.trim()) {
+        display.innerText = `اسم الدارس: ${name.trim()}`;
+        display.classList.remove('hidden');
+      } else {
+        display.innerText = '';
+        display.classList.add('hidden');
+      }
+    }
+
+    function printExamReport() {
+      playAudioTone('click');
+      const dateEl = document.getElementById('print-date-display');
+      const now = new Date();
+      if (dateEl) {
+        dateEl.innerText = `تاريخ إتمام الاختبار: ${now.toLocaleDateString('ar-SA')} م - الموافق: ${now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}`;
+      }
+      window.print();
+    }
+
+    // --- Boot Initialization on Load ---
+    window.onload = function() {
       initTheme();
+      loadSavedState();
       applyGlobalFontSize();
       renderShubuhatAccordion();
       updateAllCounters();
       setQuizMode('cards');
-    });
+    };
   </script>
 </body>
 </html>
